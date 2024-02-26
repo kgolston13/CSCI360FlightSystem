@@ -1,3 +1,9 @@
+/* FlightPath class
+ * Group 7: Appa, Jacob, Keenan, and Lance
+ * Program file name: FlightPath.java
+ * Description: 
+ * 
+*/
 package csci360flightsystem;
 
 public class FlightPath {
