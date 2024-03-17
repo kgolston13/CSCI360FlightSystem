@@ -147,4 +147,28 @@ public class FlightPath {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
+    
+    // Main method for testing
+    public static void main(String[] args) {
+        // Create a new FlightPath object
+        FlightPath flightPath = new FlightPath(1, "LAX", "DFW", "JFK", null);
+        // Create a new Airplane object
+        Airplane airplane = new Airplane(500, 100, 1000, 1, 1, "Boeing", "747", "Commercial");
+        // Set the airplane for the flight path
+        flightPath.setAirplane(airplane);
+        // Create a new FlightPathManager object
+        FlightPath flightPathManager = new FlightPath();
+        // Create a new flight path
+        flightPathManager.createFlightPath(flightPath);
+        // Display all flight paths
+        flightPathManager.displayFlightPaths();
+        // Modify the flight path
+        flightPathManager.modifyFlightPath(0, new FlightPath(1, "LAX", "DFW", "JFK", airplane));
+        // Display all flight paths
+        flightPathManager.displayFlightPaths();
+        // Delete the flight path
+        flightPathManager.deleteFlightPath(0);
+        // Display all flight paths
+        flightPathManager.displayFlightPaths();
+    }
 }
