@@ -159,15 +159,15 @@ public class FlightPath {
         // Create a new FlightPathManager object
         FlightPath flightPathManager = new FlightPath();
         // Create a new flight path
-        flightPathManager.createFlightPath(flightPath);
+        FlightPath.createFlightPath(flightPath);
         // Display all flight paths
         flightPathManager.displayFlightPaths();
         // Modify the flight path
-        flightPathManager.modifyFlightPath(0, new FlightPath(1, "LAX", "DFW", "JFK", airplane));
+        FlightPath.modifyFlightPath(0, new FlightPath(1, "LAX", "DFW", "JFK", airplane));
         // Display all flight paths
         flightPathManager.displayFlightPaths();
         // Delete the flight path
-        flightPathManager.deleteFlightPath(0);
+        FlightPath.deleteFlightPath(0);
         // Display all flight paths
         flightPathManager.displayFlightPaths();
     }
