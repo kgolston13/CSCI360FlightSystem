@@ -197,32 +197,10 @@ public class FlightPath {
 
     // Main method for testing
     public static void main(String[] args) {
-        // Initially, the list of middle airports is empty
-        List<String> middleAirports = new Vector<>();
-        FlightPath flightPath = new FlightPath(1, "LAX", middleAirports, "JFK", null);
+        /*
+         * Create an interface for the user to interact with the flight path system
+         */
 
-        // Create a new Airplane object
-        Airplane airplane = new Airplane(500, 100, 1000, "Jet A", 1, "Boeing", "747", "Commercial");
-        flightPath.setAirplane(airplane);
-
-        // Simulate the dynamic addition of a middle airport based on calculations
-        flightPath.addMiddleAirport("DFW");
-        flightPath.addMiddleAirport("PHX");
-
-        // FlightPathManager operations: create, modify, display, and delete flight
-        // paths
-        FlightPath flightPathManager = new FlightPath();
-        FlightPath.createFlightPath(flightPath);
-        flightPathManager.displayFlightPaths();
-
-        // Modify the flight path by adding another middle airport
-        flightPath.addMiddleAirport("ATL");
-        FlightPath.modifyFlightPath(0, flightPath);
-        flightPathManager.displayFlightPaths();
-
-        // Delete the flight path
-        FlightPath.deleteFlightPath(0);
-        flightPathManager.displayFlightPaths();
     }
 
 }
