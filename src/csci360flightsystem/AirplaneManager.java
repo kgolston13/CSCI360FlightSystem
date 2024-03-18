@@ -4,7 +4,7 @@
  * This file has the capability to create, modify, delete, display, or search airplane objects.
 */ 
 package csci360flightsystem;
-//This is a test to see if my connection is working
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;

@@ -22,7 +22,7 @@ public class FlightPath {
     public int key;
     // The starting airport of a flight path, represented by type string.
     public String startingAirport;
-    // The middle airport(s) of a flight path, represented by type string.
+    // The middle airport(s) of a flight path, represented by type list of strings.
     public List<String> middleAirports;
     // The ending airport of a flight path, represented by type string.
     public String endingAirport;
@@ -197,7 +197,7 @@ public class FlightPath {
 
     // Main method for testing
     public static void main(String[] args) {
-        // Initially, the list of middle airports may be empty
+        // Initially, the list of middle airports is empty
         List<String> middleAirports = new Vector<>();
         FlightPath flightPath = new FlightPath(1, "LAX", middleAirports, "JFK", null);
 
