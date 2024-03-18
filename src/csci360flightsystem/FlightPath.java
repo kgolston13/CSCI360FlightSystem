@@ -153,7 +153,7 @@ public class FlightPath {
         // Create a new FlightPath object
         FlightPath flightPath = new FlightPath(1, "LAX", "DFW", "JFK", null);
         // Create a new Airplane object
-        Airplane airplane = new Airplane(500, 100, 1000, 1, 1, "Boeing", "747", "Commercial");
+        Airplane airplane = new Airplane(500, 100, 1000, "Jet A", 1, "Boeing", "747", "Commercial");
         // Set the airplane for the flight path
         flightPath.setAirplane(airplane);
         // Create a new FlightPathManager object

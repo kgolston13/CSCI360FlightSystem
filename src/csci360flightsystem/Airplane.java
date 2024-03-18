@@ -16,7 +16,7 @@ public class Airplane {
     //The amount of fuel an aircraft can hold, represented by type double.
     public double fuelCapacity;
     //The type of fuel an airplane uses, represented by type string
-    public double fuelType;
+    public String fuelType;
     //The unique identifier of an airplane, represented by type int.
     public int key;
     //The make of an airplane, represented by type string.
@@ -27,7 +27,7 @@ public class Airplane {
     public String type;
 
     // Constructors for the Airplane class
-    public Airplane(double airspeed, double fuelBurn, double fuelCapacity, double fuelType, int key, String make, String model, String type) {
+    public Airplane(double airspeed, double fuelBurn, double fuelCapacity, String fuelType, int key, String make, String model, String type) {
         this.airspeed = airspeed;
         this.fuelBurn = fuelBurn;
         this.fuelCapacity = fuelCapacity;
@@ -42,32 +42,52 @@ public class Airplane {
     public double getAirspeed() {
         return airspeed;
     }
+    //airspeed cannot be negative
     public void setAirspeed(double airspeed) {
-        this.airspeed = airspeed;
+        if (airspeed < 0) {
+            this.airspeed = airspeed;
+        } else {
+            throw new IllegalArgumentException("Airspeed cannot be negative");
+        }
     }
     public double getFuelBurn() {
         return fuelBurn;
     }
+    //fuelBurn cannot be negative
     public void setFuelBurn(double fuelBurn) {
-        this.fuelBurn = fuelBurn;
+        if (fuelBurn < 0) {
+            this.fuelBurn = fuelBurn;
+        } else {
+            throw new IllegalArgumentException("Fuel burn cannot be negative");
+        }
     }
     public double getFuelCapacity() {
         return fuelCapacity;
     }
+    //fuelCapacity cannot be negative
     public void setFuelCapacity(double fuelCapacity) {
-        this.fuelCapacity = fuelCapacity;
+        if (fuelCapacity < 0) {
+            this.fuelCapacity = fuelCapacity;
+        } else {
+            throw new IllegalArgumentException("Fuel capacity cannot be negative");
+        }
     }
-    public double getFuelType() {
+    public String getFuelType() {
         return fuelType;
     }
-    public void setFuelType(double fuelType) {
+    public void setFuelType(String fuelType) {
         this.fuelType = fuelType;
     }
     public int getKey() {
         return key;
     }
+    //key cannot be negative and must be unique
     public void setKey(int key) {
-        this.key = key;
+        if (key < 0) {
+            this.key = key;
+        } else {
+            throw new IllegalArgumentException("Key cannot be negative");
+        }
     }
     public String getMake() {
         return make;

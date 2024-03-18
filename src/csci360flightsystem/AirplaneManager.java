@@ -68,7 +68,7 @@ public class AirplaneManager {
                 airplanes.add(new Airplane(Double.parseDouble(attributes[0]),
                                             Double.parseDouble(attributes[1]),
                                             Double.parseDouble(attributes[2]),
-                                            Double.parseDouble(attributes[3]),
+                                            attributes[3],
                                             Integer.parseInt(attributes[4]),
                                             attributes[5],
                                             attributes[6],
