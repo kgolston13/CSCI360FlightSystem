@@ -80,7 +80,11 @@ public class Airport {
         return fuelType;
     }
 
+    // fuelType cannot be null or empty
     public void setFuelType(String fuelType) {
+        if (fuelType == null || fuelType.trim().isEmpty()) {
+            throw new IllegalArgumentException("Fuel type cannot be null or empty.");
+        }
         this.fuelType = fuelType;
     }
 
@@ -114,7 +118,11 @@ public class Airport {
         return name;
     }
 
+    // name cannot be null or empty
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty.");
+        }
         this.name = name;
     }
 

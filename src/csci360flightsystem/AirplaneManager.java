@@ -13,23 +13,46 @@ import java.util.Vector;
 
 public class AirplaneManager {
     // Vector list of airplanes
-    public static Vector<Airplane> airplanes;
+    private Vector<Airplane> airplanes;
 
-    // Constructor for the AirplaneManager class
-    public AirplaneManager() {
+    // Static instance for singleton pattern
+    private static AirplaneManager instance;
+
+    // Private constructor for the AirplaneManager class
+    private AirplaneManager() {
         airplanes = new Vector<>();
         loadAirplanesFromFile("Airplanes.txt");
     }
 
-    // Methods for the AirplaneManager class
+    // Methods for the
+    // Public method to get the instance of the class
+    public static AirplaneManager getInstance() {
+        if (instance == null) {
+            instance = new AirplaneManager();
+        }
+        return instance;
+    }
+
     // Method to create a new airplane
     public void createAirplane(Airplane airplane) {
+        // Validate the airplane object
+        if (airplane.getAirspeed() <= 0 || airplane.getFuelBurn() <= 0 || airplane.getFuelCapacity() <= 0 ||
+                airplane.getKey() < 0 || airplane.getMake() == null || airplane.getMake().trim().isEmpty() ||
+                airplane.getModel() == null || airplane.getModel().trim().isEmpty() ||
+                airplane.getType() == null || airplane.getType().trim().isEmpty()) {
+            System.out.println("Invalid airplane data provided.");
+            return;
+        }
+
+        // Check if the airplane with the same key already exists
         for (Airplane existingAirplane : airplanes) {
             if (existingAirplane.getKey() == airplane.getKey()) {
                 System.out.println("Airplane with key " + airplane.getKey() + " already exists.");
-                return; // Stop the method here if key already exists
+                return;
             }
         }
+
+        // Add the airplane to the list
         airplanes.add(airplane);
         saveAirplanesToFile("Airplanes.txt");
     }
@@ -48,29 +71,39 @@ public class AirplaneManager {
     }
 
     // Method to modify an airplane
-    public void modifyAirplane(int index, Airplane newAirplane) {
-        airplanes.set(index, newAirplane);
-        saveAirplanesToFile("Airplanes.txt");
+    public void modifyAirplane(int key, Airplane newAirplane) {
+        for (int i = 0; i < airplanes.size(); i++) {
+            Airplane existingAirplane = airplanes.get(i);
+            if (existingAirplane.getKey() == key) {
+                // Validate the new airplane object except for the key
+                if (newAirplane.getAirspeed() <= 0 || newAirplane.getFuelBurn() <= 0 ||
+                        newAirplane.getFuelCapacity() <= 0 || newAirplane.getMake() == null ||
+                        newAirplane.getMake().trim().isEmpty() || newAirplane.getModel() == null ||
+                        newAirplane.getModel().trim().isEmpty() || newAirplane.getType() == null ||
+                        newAirplane.getType().trim().isEmpty()) {
+                    System.out.println("Invalid airplane data provided.");
+                    return;
+                }
+
+                // Update the airplane details but keep the original key
+                newAirplane.setKey(existingAirplane.getKey());
+                airplanes.set(i, newAirplane);
+                saveAirplanesToFile("Airplanes.txt");
+                return;
+            }
+        }
+
+        System.out.println("Airplane with key " + key + " not found.");
     }
 
     // Method to search for an airplane by key
-    public static Airplane searchAirplane(int key) {
+    public Airplane searchAirplane(int key) {
         for (Airplane airplane : airplanes) {
             if (airplane.getKey() == key) {
                 return airplane;
             }
         }
-        return null; // Return null if airplane with specified key is not found
-    }
-
-    // Method to search for an airplane by key
-    public static Airplane searchAirplane(int key, Vector<Airplane> airplanes) {
-        for (Airplane airplane : airplanes) {
-            if (airplane.getKey() == key) {
-                return airplane;
-            }
-        }
-        return null; // Return null if airplane with specified key is not found
+        return null;
     }
 
     // Load airplanes from file

@@ -46,10 +46,10 @@ public class Airplane {
 
     // airspeed cannot be negative
     public void setAirspeed(double airspeed) {
-        if (airspeed < 0) {
+        if (airspeed > 0) {
             this.airspeed = airspeed;
         } else {
-            throw new IllegalArgumentException("Airspeed cannot be negative");
+            throw new IllegalArgumentException("Airspeed must be positive");
         }
     }
 
@@ -59,7 +59,7 @@ public class Airplane {
 
     // fuelBurn cannot be negative
     public void setFuelBurn(double fuelBurn) {
-        if (fuelBurn < 0) {
+        if (fuelBurn > 0) {
             this.fuelBurn = fuelBurn;
         } else {
             throw new IllegalArgumentException("Fuel burn cannot be negative");
@@ -72,7 +72,7 @@ public class Airplane {
 
     // fuelCapacity cannot be negative
     public void setFuelCapacity(double fuelCapacity) {
-        if (fuelCapacity < 0) {
+        if (fuelCapacity > 0) {
             this.fuelCapacity = fuelCapacity;
         } else {
             throw new IllegalArgumentException("Fuel capacity cannot be negative");
@@ -93,7 +93,7 @@ public class Airplane {
 
     // key cannot be negative and must be unique
     public void setKey(int key) {
-        if (key < 0) {
+        if (key >= 0) {
             this.key = key;
         } else {
             throw new IllegalArgumentException("Key cannot be negative");
