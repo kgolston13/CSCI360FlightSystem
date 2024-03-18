@@ -24,9 +24,15 @@ public class AirplaneManager {
     //Methods for the AirplaneManager class
     // Method to create a new airplane
     public void createAirplane(Airplane airplane) {
+        for (Airplane existingAirplane : airplanes) {
+            if (existingAirplane.getKey() == airplane.getKey()) {
+                System.out.println("Airplane with key " + airplane.getKey() + " already exists.");
+                return; // Stop the method here if key already exists
+            }
+        }
         airplanes.add(airplane);
         saveAirplanesToFile("Airplanes.txt");
-    }
+    }    
 
     // Method to delete an airplane
     public void deleteAirplane(Airplane airplane) {
@@ -48,7 +54,7 @@ public class AirplaneManager {
     }
 
     // Method to search for an airplane by key
-    public Airplane searchAirplane(int key) {
+    public static Airplane searchAirplane(int key) {
         for (Airplane airplane : airplanes) {
             if (airplane.getKey() == key) {
                 return airplane;

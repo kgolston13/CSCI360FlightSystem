@@ -2,7 +2,7 @@
  * Program file name: AirportManager.java 
  * Description:  
  * This file has the capability to create, modify, delete, display, or search airport objects.
-*/ 
+*/
 package csci360flightsystem;
 
 import java.io.BufferedReader;
@@ -21,9 +21,15 @@ public class AirportManager {
         loadAirportsFromFile("Airports.txt");
     }
 
-    //Methods for the AirportManager class
+    // Methods for the AirportManager class
     // Method to create a new airport
     public void createAirport(Airport airport) {
+        for (Airport existingAirport : airports) {
+            if (existingAirport.getICAO().equals(airport.getICAO())) {
+                System.out.println("Airport with ICAO " + airport.getICAO() + " already exists.");
+                return;
+            }
+        }
         airports.add(airport);
         saveAirportsToFile("Airports.txt");
     }
@@ -43,8 +49,13 @@ public class AirportManager {
 
     // Method to modify an airport
     public void modifyAirport(int index, Airport newAirport) {
-        airports.set(index, newAirport);
-        saveAirportsToFile("Airports.txt");
+        if (index >= 0 && index < airports.size()) {
+            airports.set(index, newAirport);
+            saveAirportsToFile("Airports.txt");
+        } else {
+            System.out.println("Invalid index: " + index);
+            // Optionally log this as an error or throw an exception
+        }
     }
 
     // Method to search for an airport by code
@@ -66,12 +77,12 @@ public class AirportManager {
                 String[] attributes = line.split(",");
                 // Create a new Airport object from attributes and add it to the vector
                 airports.add(new Airport(attributes[0],
-                                          Double.parseDouble(attributes[1]),
-                                          attributes[2],
-                                          attributes[3],
-                                          Double.parseDouble(attributes[4]),
-                                          Double.parseDouble(attributes[5]),
-                                          attributes[6]));
+                        Double.parseDouble(attributes[1]),
+                        attributes[2],
+                        attributes[3],
+                        Double.parseDouble(attributes[4]),
+                        Double.parseDouble(attributes[5]),
+                        attributes[6]));
             }
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage());
@@ -83,12 +94,12 @@ public class AirportManager {
         try (FileWriter writer = new FileWriter(fileName)) {
             for (Airport airport : airports) {
                 writer.write(airport.getICAO() + "," +
-                             airport.getRadioFrequency() + "," +
-                             airport.getRadioType() + "," +
-                             airport.getFuelType() + "," +
-                             airport.getLatitude() + "," +
-                             airport.getLongitude() + "," +
-                             airport.getName() + "\n");
+                        airport.getRadioFrequency() + "," +
+                        airport.getRadioType() + "," +
+                        airport.getFuelType() + "," +
+                        airport.getLatitude() + "," +
+                        airport.getLongitude() + "," +
+                        airport.getName() + "\n");
             }
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());

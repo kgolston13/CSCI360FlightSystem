@@ -3,83 +3,107 @@
  * Description:  
  * This class has the capability to create and display the flight path of an airplane from one airport to another. 
  * It can also search through the list of aiplanes and airports to find the correct flight path.
-*/ 
+*/
 package csci360flightsystem;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 public class FlightPath {
-	//Attributes of the FlightPath class
-	//key, starting airport, middle airport(s), ending airport, airplane
+    // Attributes of the FlightPath class
+    // key, starting airport, middle airport(s), ending airport, airplane
 
-	//The unique identifier of an airplane, represented by type int.
-	public int key;
-	//The starting airport of a flight path, represented by type string.
-	public String startingAirport;
-	//The middle airport(s) of a flight path, represented by type string.
-	public String middleAirports;
-	//The ending airport of a flight path, represented by type string.
-	public String endingAirport;
-	//The airplane of a flight path, represented by type Airplane.
-	public Airplane airplane;
+    // The unique identifier of an airplane, represented by type int.
+    public int key;
+    // The starting airport of a flight path, represented by type string.
+    public String startingAirport;
+    // The middle airport(s) of a flight path, represented by type string.
+    public List<String> middleAirports;
+    // The ending airport of a flight path, represented by type string.
+    public String endingAirport;
+    // The airplane of a flight path, represented by type Airplane.
+    public Airplane airplane;
 
-	// Constructors for the FlightPath class
-	public FlightPath(int key, String startingAirport, String middleAirports, String endingAirport, Airplane airplane) {
-		this.key = key;
-		this.startingAirport = startingAirport;
-		this.middleAirports = middleAirports;
-		this.endingAirport = endingAirport;
-		this.airplane = airplane;
-	}
+    // Constructors for the FlightPath class
+    public FlightPath(int key, String startingAirport, List<String> middleAirports, String endingAirport,
+            Airplane airplane) {
+        this.key = key;
+        this.startingAirport = startingAirport;
+        this.middleAirports = middleAirports;
+        this.endingAirport = endingAirport;
+        this.airplane = airplane;
+    }
 
-	// Getters and setters for the FlightPath class
-	public int getKey() {
-		return key;
-	}
-	public void setKey(int key) {
-		this.key = key;
-	}
-	public String getStartingAirport() {
-		return startingAirport;
-	}
-	public void setStartingAirport(String startingAirport) {
-		this.startingAirport = startingAirport;
-	}
-	public String getMiddleAirports() {
-		return middleAirports;
-	}
-	public void setMiddleAirports(String middleAirports) {
-		this.middleAirports = middleAirports;
-	}
-	public String getEndingAirport() {
-		return endingAirport;
-	}
-	public void setEndingAirport(String endingAirport) {
-		this.endingAirport = endingAirport;
-	}
-	public Airplane getAirplane() {
-		return airplane;
-	}
-	public void setAirplane(Airplane airplane) {
-		this.airplane = airplane;
-	}
+    // Getters and setters for the FlightPath class
+    public int getKey() {
+        return key;
+    }
 
-	// Vector list of flight paths
-	private static Vector<FlightPath> flightPaths;
+    public void setKey(int key) {
+        this.key = key;
+    }
 
-	// Constructor for the FlightPath class
-	public FlightPath() {
-		flightPaths = new Vector<>();
-		loadFlightPathsFromFile("FlightLog.txt");
-	}
+    public String getStartingAirport() {
+        return startingAirport;
+    }
 
-	//Methods for the FlightPath class
-	// Method to create a new flight path
+    public void setStartingAirport(String startingAirport) {
+        this.startingAirport = startingAirport;
+    }
+
+    public List<String> getMiddleAirports() {
+        return middleAirports;
+    }
+
+    public void setMiddleAirports(List<String> middleAirports) {
+        this.middleAirports = middleAirports;
+    }
+
+    public String getEndingAirport() {
+        return endingAirport;
+    }
+
+    public void setEndingAirport(String endingAirport) {
+        this.endingAirport = endingAirport;
+    }
+
+    public Airplane getAirplane() {
+        return airplane;
+    }
+
+    public void setAirplane(Airplane airplane) {
+        this.airplane = airplane;
+    }
+
+    public void addMiddleAirport(String airportCode) {
+        if (!middleAirports.contains(airportCode)) {
+            middleAirports.add(airportCode);
+        }
+    }
+
+    // Vector list of flight paths
+    private static Vector<FlightPath> flightPaths;
+
+    // Constructor for the FlightPath class
+    public FlightPath() {
+        flightPaths = new Vector<>();
+        loadFlightPathsFromFile("FlightLog.txt");
+    }
+
+    // Methods for the FlightPath class
+    // Method to create a new flight path
     public static void createFlightPath(FlightPath flightPath) {
+        for (FlightPath existingFlightPath : flightPaths) {
+            if (existingFlightPath.getKey() == flightPath.getKey()) {
+                System.out.println("FlightPath with key " + flightPath.getKey() + " already exists.");
+                return;
+            }
+        }
         flightPaths.add(flightPath);
         saveFlightPathsToFile("FlightLog.txt");
     }
@@ -95,7 +119,8 @@ public class FlightPath {
         flightPaths.remove(index);
         saveFlightPathsToFile("FlightLog.txt");
     }
-	// Method to display flight paths
+
+    // Method to display flight paths
     public void displayFlightPaths() {
         for (FlightPath flightPath : flightPaths) {
             System.out.println(flightPath);
@@ -120,14 +145,34 @@ public class FlightPath {
 
     // Load flight paths from file
     private void loadFlightPathsFromFile(String fileName) {
+        AirportManager airportManager = new AirportManager();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Split the line by comma to extract attributes
-                String[] attributes = line.split(",");
-                // Create a new FlightPath object from attributes and add it to the vector
-                flightPaths.add(new FlightPath(Integer.parseInt(attributes[0]),
-                        attributes[1], attributes[2], attributes[3], null)); // You might need to adjust this if Airplane object is available in FlightLog.txt
+                try {
+                    String[] attributes = line.split(",");
+                    List<String> middleAirportsICAOs = new Vector<>(Arrays.asList(attributes[2].split(";")));
+
+                    // Initialize the list of middle airports
+                    List<String> middleAirports = new Vector<>();
+                    for (String icao : middleAirportsICAOs) {
+                        Airport airport = airportManager.searchAirport(icao);// Using searchAirport method
+                        if (airport != null) {
+                            middleAirports.add(airport.getName());
+                        }
+                    }
+
+                    Airplane airplane = AirplaneManager.searchAirplane(Integer.parseInt(attributes[4]));
+                    Airport startingAirport = airportManager.searchAirport(attributes[1]);
+                    Airport endingAirport = airportManager.searchAirport(attributes[3]);
+
+                    if (startingAirport != null && endingAirport != null) {
+                        flightPaths.add(new FlightPath(Integer.parseInt(attributes[0]),
+                                startingAirport.getName(), middleAirports, endingAirport.getName(), airplane));
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error processing line: " + line + "; Error: " + e.getMessage());
+                }
             }
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage());
@@ -138,37 +183,46 @@ public class FlightPath {
     private static void saveFlightPathsToFile(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             for (FlightPath flightPath : flightPaths) {
+                String middleAirportsStr = String.join(";", flightPath.getMiddleAirports());
                 writer.write(flightPath.getKey() + "," +
                         flightPath.getStartingAirport() + "," +
-                        flightPath.getMiddleAirports() + "," +
-                        flightPath.getEndingAirport() + "\n");
+                        middleAirportsStr + "," +
+                        flightPath.getEndingAirport() + "," +
+                        (flightPath.getAirplane() != null ? flightPath.getAirplane().getKey() : "null") + "\n");
             }
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
-    
+
     // Main method for testing
     public static void main(String[] args) {
-        // Create a new FlightPath object
-        FlightPath flightPath = new FlightPath(1, "LAX", "DFW", "JFK", null);
+        // Initially, the list of middle airports may be empty
+        List<String> middleAirports = new Vector<>();
+        FlightPath flightPath = new FlightPath(1, "LAX", middleAirports, "JFK", null);
+
         // Create a new Airplane object
         Airplane airplane = new Airplane(500, 100, 1000, "Jet A", 1, "Boeing", "747", "Commercial");
-        // Set the airplane for the flight path
         flightPath.setAirplane(airplane);
-        // Create a new FlightPathManager object
+
+        // Simulate the dynamic addition of a middle airport based on calculations
+        flightPath.addMiddleAirport("DFW");
+        flightPath.addMiddleAirport("PHX");
+
+        // FlightPathManager operations: create, modify, display, and delete flight
+        // paths
         FlightPath flightPathManager = new FlightPath();
-        // Create a new flight path
         FlightPath.createFlightPath(flightPath);
-        // Display all flight paths
         flightPathManager.displayFlightPaths();
-        // Modify the flight path
-        FlightPath.modifyFlightPath(0, new FlightPath(1, "LAX", "DFW", "JFK", airplane));
-        // Display all flight paths
+
+        // Modify the flight path by adding another middle airport
+        flightPath.addMiddleAirport("ATL");
+        FlightPath.modifyFlightPath(0, flightPath);
         flightPathManager.displayFlightPaths();
+
         // Delete the flight path
         FlightPath.deleteFlightPath(0);
-        // Display all flight paths
         flightPathManager.displayFlightPaths();
     }
+
 }
