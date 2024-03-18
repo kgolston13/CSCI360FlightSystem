@@ -68,6 +68,15 @@ public class AirportManager {
         return null; // Return null if airport with specified code is not found
     }
 
+    // Method to display a specific airport by code
+    public void displayAirport(String code) {
+        for (Airport airport : airports) {
+            if (airport.getICAO().equals(code)) {
+                System.out.println(airport);
+            }
+        }
+    }
+
     // Load airports from file
     private void loadAirportsFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {

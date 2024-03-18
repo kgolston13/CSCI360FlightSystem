@@ -2,7 +2,7 @@
  * Program file name: AirplaneManager.java 
  * Description:  
  * This file has the capability to create, modify, delete, display, or search airplane objects.
-*/ 
+*/
 package csci360flightsystem;
 
 import java.io.BufferedReader;
@@ -21,7 +21,7 @@ public class AirplaneManager {
         loadAirplanesFromFile("Airplanes.txt");
     }
 
-    //Methods for the AirplaneManager class
+    // Methods for the AirplaneManager class
     // Method to create a new airplane
     public void createAirplane(Airplane airplane) {
         for (Airplane existingAirplane : airplanes) {
@@ -32,7 +32,7 @@ public class AirplaneManager {
         }
         airplanes.add(airplane);
         saveAirplanesToFile("Airplanes.txt");
-    }    
+    }
 
     // Method to delete an airplane
     public void deleteAirplane(Airplane airplane) {
@@ -63,6 +63,16 @@ public class AirplaneManager {
         return null; // Return null if airplane with specified key is not found
     }
 
+    // Method to search for an airplane by key
+    public static Airplane searchAirplane(int key, Vector<Airplane> airplanes) {
+        for (Airplane airplane : airplanes) {
+            if (airplane.getKey() == key) {
+                return airplane;
+            }
+        }
+        return null; // Return null if airplane with specified key is not found
+    }
+
     // Load airplanes from file
     private void loadAirplanesFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -72,13 +82,13 @@ public class AirplaneManager {
                 String[] attributes = line.split(",");
                 // Create a new Airplane object from attributes and add it to the vector
                 airplanes.add(new Airplane(Double.parseDouble(attributes[0]),
-                                            Double.parseDouble(attributes[1]),
-                                            Double.parseDouble(attributes[2]),
-                                            attributes[3],
-                                            Integer.parseInt(attributes[4]),
-                                            attributes[5],
-                                            attributes[6],
-                                            attributes[7]));
+                        Double.parseDouble(attributes[1]),
+                        Double.parseDouble(attributes[2]),
+                        attributes[3],
+                        Integer.parseInt(attributes[4]),
+                        attributes[5],
+                        attributes[6],
+                        attributes[7]));
             }
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage());
@@ -90,13 +100,13 @@ public class AirplaneManager {
         try (FileWriter writer = new FileWriter(fileName)) {
             for (Airplane airplane : airplanes) {
                 writer.write(airplane.getAirspeed() + "," +
-                             airplane.getFuelBurn() + "," +
-                             airplane.getFuelCapacity() + "," +
-                             airplane.getFuelType() + "," +
-                             airplane.getKey() + "," +
-                             airplane.getMake() + "," +
-                             airplane.getModel() + "," +
-                             airplane.getType() + "\n");
+                        airplane.getFuelBurn() + "," +
+                        airplane.getFuelCapacity() + "," +
+                        airplane.getFuelType() + "," +
+                        airplane.getKey() + "," +
+                        airplane.getMake() + "," +
+                        airplane.getModel() + "," +
+                        airplane.getType() + "\n");
             }
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
