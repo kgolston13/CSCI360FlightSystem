@@ -2,7 +2,8 @@
  * Program file name: FlightPath.java 
  * Description:  
  * This class has the capability to create and display the flight path of an airplane from one airport to another. 
- * It can also search through the list of aiplanes and airports to find the correct flight path.
+ * It can also search through the list of aiplanes and airports to find the correct flight path. The main method 
+ * is used for creating an interface for the user to interact with the flight path system.
 */
 package csci360flightsystem;
 
@@ -195,12 +196,9 @@ public class FlightPath {
         }
     }
 
-    // Main method for testing
+    // Main method for the Flight System, used for creating an interface for the user to interact with the flight path system
     public static void main(String[] args) {
-        /*
-         * Create an interface for the user to interact with the flight path system
-         */
-
+        
     }
 
 }
