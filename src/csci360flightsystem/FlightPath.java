@@ -1,3 +1,5 @@
+package csci360flightsystem;
+
 /* Programmers: Group 7 (Appa, Jacob, Keenan, and Lance)
  * Program file name: FlightPath.java 
  * Description:  
@@ -5,8 +7,6 @@
  * It can also search through the list of aiplanes and airports to find the correct flight path. The main method 
  * is used for creating an interface for the user to interact with the flight path system.
 */
-package csci360flightsystem;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.Scanner;
+
 
 public class FlightPath {
     // Attributes of the FlightPath class
@@ -143,6 +144,7 @@ public class FlightPath {
     // Method to delete a flight path
     public static void deleteFlightPath(int index) {
         flightPaths.remove(index);
+
         saveFlightPathsToFile("FlightLog.txt");
     }
 
@@ -550,6 +552,18 @@ public class FlightPath {
     // user to interact with the flight path system
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        
+        AirportManager airportManager = AirportManager.getInstance();
+        
+        // Call the displayNodesAndEdges method to display all nodes and edges
+        airportManager.displayNodesAndEdges();
+        
+        Airport airport1 = new Airport("ICAO1", 123.45, "Type1", "Fuel1", 40.7128, -74.0060, "Airport1");
+        Airport airport2 = new Airport("ICAO2", 234.56, "Type2", "Fuel2", 34.0522, -118.2437, "Airport2");
+        
+        // Calculate distance between airports
+        double distance = AirportManager.calculateDistance(airport1, airport2);
+        System.out.println("Distance between Airport1 and Airport2: " + distance + " miles");
 
         while (true) {
             System.out.println("\nWelcome to the Flight System Interface!");
