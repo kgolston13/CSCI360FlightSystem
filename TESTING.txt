@@ -1,10 +1,46 @@
 //THIS FILE IS DEDICATED TO TEST CASES, LEAVE PLENTY OF ROOM IN BETWEEN CASES 
 
-//TESTING FOR DISTANCE BETWEEN TWO AIRPORTS (ATLANTA & TORONTO)
-//VHF IS ALWAYS THE RETURN VALUE FOR COM TYPE & ICAO MUST BE 4 CHAR, AND
-//START WITH K OR C
-Airport atlanta = new Airport("KATL", 122.95, "VHF", "Fuel1", 33.6362, -84.4294, "Atlanta");
-Airport toronto = new Airport("CYYZ", 118.70, "VHF", "Fuel2", 43.6771, -79.6334, "Toronto");
+
+
+//List of real world airplanes for reference
+airplanes
+Airplane boeing737 = new Airplane(588, 2600, 6800, "JetA", 1, "Boeing", "737", "Commercial");
+Airplane airbusA320 = new Airplane(541, 2400, 6300, "JetA", 2, "Airbus", "A320", "Commercial");
+Airplane boeing777 = new Airplane(560, 3300, 11700, "JetA", 3, "Boeing", "777", "Commercial");
+Airplane airbusA380 = new Airplane(1020, 5100, 18300, "JetA", 4, "Airbus", "A380", "Commercial");
+Airplane boeing787 = new Airplane(587, 2900, 13800, "JetA", 5, "Boeing", "787", "Commercial");
+Airplane airbusA350 = new Airplane(593, 2700, 12600, "JetA", 6, "Airbus", "A350", "Commercial");
+Airplane boeing747 = new Airplane(614, 3500, 16200, "JetA", 7, "Boeing", "747", "Commercial");
+Airplane bombardierCRJ900 = new Airplane(515, 2100, 4900, "JetA", 8, "Bombardier", "CRJ900", "Commercial");
+Airplane embraerE175 = new Airplane(544, 1800, 4400, "JetA", 9, "Embraer", "E175", "Commercial");
+Airplane cessna172 = new Airplane(226, 500, 240, "JetA", 10, "Cessna", "172", "Private");
+
+
+
+//List of real world airports for reference
+Airport newYorkJFK = new Airport("KJFK", 123.90, "VHF", "JetA", 40.6413, -73.7781, "New York JFK");
+Airport sanFrancisco = new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco");
+Airport miami = new Airport("KMIA", 119.15, "VHF", "JetA", 25.7959, -80.2870, "Miami");
+Airport dallasFtWorth = new Airport("KDFW", 135.00, "VHF", "JetA", 32.8998, -97.0403, "Dallas/Ft Worth");
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+Airport vancouver = new Airport("CYVR", 119.55, "VHF", "JetA", 49.1947, -123.1838, "Vancouver");
+Airport montreal = new Airport("CYUL", 121.90, "VHF", "JetA", 45.4715, -73.7408, "Montreal");
+Airport calgary = new Airport("CYYC", 118.20, "VHF", "JetA", 51.1139, -114.0203, "Calgary");
+Airport edmonton = new Airport("CYEG", 121.70, "VHF", "JetA", 53.3097, -113.5799, "Edmonton");
+
+
+
+// Testing creation of airports, distance calculation, and display of nodes and edges
+// Creating an instance of the AirportManager class
+AirportManager manager = AirportManager.getInstance();
+
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+
+// Adding airports
+manager.createAirport(atlanta);
+manager.createAirport(toronto);
 
 // Calculate distance between airports
 double distance = AirportManager.calculateDistance(atlanta, toronto);
@@ -12,5 +48,6 @@ double distance = AirportManager.calculateDistance(atlanta, toronto);
 // Display the distance
 System.out.println("Distance between Atlanta and Toronto is: " + distance + "kilometers");
 
-// Call the displayNodesAndEdges method to display all nodes and edges
-airportManager.displayNodesAndEdges();
+// Displaying nodes and edges to check if the airports and distances are
+// correctly added
+manager.displayNodesAndEdges();
