@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Vector;
 
 public class AirportManager {
-    
+
     private class AirportNode {
         private Airport airport;
         private Map<AirportNode, Double> edges;
@@ -32,17 +32,19 @@ public class AirportManager {
             edges.put(node, distance);
         }
     }
-    
+
     // Vector list of airports
     private Vector<Airport> airports;
+
     public Vector<Airport> getAirports() {
         return airports;
     }
+
     public Map<String, AirportNode> airportGraph;
-    
+
     // Static instance for the singleton pattern
     private static AirportManager instance;
-    
+
     // Private constructor for the AirportManager class
     public AirportManager() {
         airports = new Vector<>();
@@ -50,11 +52,9 @@ public class AirportManager {
         loadAirportsFromFile("Airports.txt");
     }
 
-
-    
     // Methods for the AirportManager class
     // Public method to get the instance of the class
-    public static AirportManager getInstance() {
+    public static synchronized AirportManager getInstance() {
         if (instance == null) {
             instance = new AirportManager();
         }
@@ -87,12 +87,12 @@ public class AirportManager {
         airports.add(airport);
         saveAirportsToFile("Airports.txt");
 
-        // Add the airport to the graph   =======================              BUGGGED?! NEEDS FIXING
+        // Add the airport to the graph ======================= BUGGGED?! NEEDS FIXING
         AirportNode newNode = new AirportNode(airport);
         airportGraph.put(airport.getICAO(), newNode);
 
         for (AirportNode node : airportGraph.values()) {
-            if (node != newNode) {
+            if (!node.getAirport().getICAO().equals(newNode.getAirport().getICAO())) {
                 double distance = calculateDistance(newNode.getAirport(), node.getAirport());
                 newNode.addEdge(node, distance);
                 node.addEdge(newNode, distance);
@@ -162,14 +162,18 @@ public class AirportManager {
         System.out.println("Airport with ICAO " + icao + " not found.");
     }
 
-    public static double calculateDistance(Airport airport1, Airport airport2) {
+    public static double calculateDistance(Airport startingAirport, Airport endingAirport) {
         // Earth's radius in kilometers
         final double R = 6371.0;
+        // Check if either airport is null, or the same airport
+        if (startingAirport == null || endingAirport == null || startingAirport.equals(endingAirport)) {
+            throw new IllegalArgumentException("Invalid airports provided.");
+        }
 
-        double lat1 = Math.toRadians(airport1.getLatitude());
-        double lon1 = Math.toRadians(airport1.getLongitude());
-        double lat2 = Math.toRadians(airport2.getLatitude());
-        double lon2 = Math.toRadians(airport2.getLongitude());
+        double lat1 = Math.toRadians(startingAirport.getLatitude());
+        double lon1 = Math.toRadians(startingAirport.getLongitude());
+        double lat2 = Math.toRadians(endingAirport.getLatitude());
+        double lon2 = Math.toRadians(endingAirport.getLongitude());
 
         double dlon = lon2 - lon1;
         double dlat = lat2 - lat1;

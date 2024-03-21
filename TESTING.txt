@@ -1,14 +1,16 @@
 //THIS FILE IS DEDICATED TO TEST CASES, LEAVE PLENTY OF ROOM IN BETWEEN CASES 
 
-//TESTING FOR DISTANCE BETWEEN AIRPORTS
-Airport airport1 = new Airport("ICAO1", 123.45, "Type1", "Fuel1", 40.7128, -74.0060, "Airport1");
-Airport airport2 = new Airport("ICAO2", 234.56, "Type2", "Fuel2", 34.0522, -118.2437, "Airport2");
+//TESTING FOR DISTANCE BETWEEN TWO AIRPORTS (ATLANTA & TORONTO)
+//VHF IS ALWAYS THE RETURN VALUE FOR COM TYPE & ICAO MUST BE 4 CHAR, AND
+//START WITH K OR C
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "Fuel1", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "Fuel2", 43.6771, -79.6334, "Toronto");
 
 // Calculate distance between airports
-double distance = AirportManager.calculateDistance(airport1, airport2);
+double distance = AirportManager.calculateDistance(atlanta, toronto);
 
 // Display the distance
-System.out.println("Distance between Airport1 and Airport2: " + distance + " miles");
+System.out.println("Distance between Atlanta and Toronto is: " + distance + "kilometers");
 
 // Call the displayNodesAndEdges method to display all nodes and edges
 airportManager.displayNodesAndEdges();

@@ -247,337 +247,364 @@ public class FlightPath {
         }
     }
 
-    // Method to manage airplanes
-    public static void manageAirplanes(Scanner scanner) {
-        AirplaneManager airplaneManager = AirplaneManager.getInstance();
-
-        while (true) {
-            System.out.println("\nManage Airplanes");
-            System.out.println("1. Create Airplane");
-            System.out.println("2. Modify Airplane");
-            System.out.println("3. Delete Airplane");
-            System.out.println("4. Display Airplanes");
-            System.out.println("5. Display Airplane by Key");
-            System.out.println("6. Exit");
-            System.out.print("Please select an option: ");
-
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Creating a new airplane...");
-                    System.out.print("Enter the airplane's airspeed: ");
-                    double airspeed = scanner.nextDouble();
-                    System.out.print("Enter the airplane's fuel burn: ");
-                    double fuelBurn = scanner.nextDouble();
-                    System.out.print("Enter the airplane's fuel capacity: ");
-                    double fuelCapacity = scanner.nextDouble();
-                    System.out.print("Enter the airplane's fuel type: ");
-                    String fuelType = scanner.next();
-                    System.out.print("Enter the airplane's key: ");
-                    int key = scanner.nextInt();
-                    System.out.print("Enter the airplane's make: ");
-                    String make = scanner.next();
-                    System.out.print("Enter the airplane's model: ");
-                    String model = scanner.next();
-                    System.out.print("Enter the airplane's type: ");
-                    String type = scanner.next();
-                    try {
-                        airplaneManager.createAirplane(
-                                new Airplane(airspeed, fuelBurn, fuelCapacity, fuelType, key, make, model, type));
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Error creating airplane: " + e.getMessage());
-                    }
-                    break;
-                case 2:
-                    System.out.println("Modifying an existing airplane...");
-                    System.out.print("Enter the airplane's key: ");
-                    int modifyKey = scanner.nextInt();
-                    Airplane modifyAirplane = airplaneManager.searchAirplane(modifyKey);
-                    if (modifyAirplane != null) {
-                        System.out.print("Enter the airplane's airspeed: ");
-                        modifyAirplane.setAirspeed(scanner.nextDouble());
-                        System.out.print("Enter the airplane's fuel burn: ");
-                        modifyAirplane.setFuelBurn(scanner.nextDouble());
-                        System.out.print("Enter the airplane's fuel capacity: ");
-                        modifyAirplane.setFuelCapacity(scanner.nextDouble());
-                        System.out.print("Enter the airplane's fuel type: ");
-                        modifyAirplane.setFuelType(scanner.next());
-                        System.out.print("Enter the airplane's make: ");
-                        modifyAirplane.setMake(scanner.next());
-                        System.out.print("Enter the airplane's model: ");
-                        modifyAirplane.setModel(scanner.next());
-                        System.out.print("Enter the airplane's type: ");
-                        modifyAirplane.setType(scanner.next());
-                        try {
-                            airplaneManager.modifyAirplane(modifyKey, modifyAirplane);
-                        } catch (IllegalArgumentException e) {
-                            System.err.println("Error modifying airplane: " + e.getMessage());
-                        }
-                    } else {
-                        System.out.println("Airplane with key " + modifyKey + " not found.");
-                    }
-                    break;
-                case 3:
-                    System.out.println("Deleting an existing airplane...");
-                    System.out.print("Enter the airplane's key: ");
-                    int deleteKey = scanner.nextInt();
-                    Airplane deleteAirplane = airplaneManager.searchAirplane(deleteKey);
-                    if (deleteAirplane != null) {
-                        airplaneManager.deleteAirplane(deleteAirplane);
-                    } else {
-                        System.out.println("Airplane with key " + deleteKey + " not found.");
-                    }
-                    break;
-                case 4:
-                    System.out.println("Displaying all airplanes...");
-                    airplaneManager.displayAirplanes();
-                    break;
-                case 5:
-                    System.out.println("Displaying an airplane by key...");
-                    System.out.print("Enter the airplane's key: ");
-                    int displayKey = scanner.nextInt();
-                    airplaneManager.searchAirplane(displayKey);
-                    break;
-                case 6:
-                    System.out.println("Exiting the airplane management interface.");
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }
-    }
-
-    // Method to manage airports
-    public static void manageAirports(Scanner scanner) {
-        AirportManager airportManager = AirportManager.getInstance();
-
-        while (true) {
-            System.out.println("\nManage Airports");
-            System.out.println("1. Create Airport");
-            System.out.println("2. Modify Airport");
-            System.out.println("3. Delete Airport");
-            System.out.println("4. Display Airports");
-            System.out.println("5. Display Airport by ICAO");
-            System.out.println("6. Exit");
-            System.out.print("Please select an option: ");
-
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Creating a new airport...");
-                    System.out.print("Enter the airport's ICAO: ");
-                    String ICAO = scanner.next();
-                    System.out.print("Enter the airport's radio frequency (30 - 300 MHz for VHF): ");
-                    double radioFrequency = scanner.nextDouble();
-                    System.out.print("Enter the airport's latitude: ");
-                    double latitude = scanner.nextDouble();
-                    System.out.print("Enter the airport's longitude: ");
-                    double longitude = scanner.nextDouble();
-                    System.out.print("Enter the airport's name: ");
-                    String name = scanner.next();
-                    System.out.print("Enter the airport's fuel type: ");
-                    String fuelType = scanner.next();
-                    try {
-                        airportManager.createAirport(
-                                new Airport(ICAO, radioFrequency, "VHF", fuelType, latitude, longitude, name));
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Error creating airport: " + e.getMessage());
-                    }
-                    break;
-                case 2:
-                    System.out.println("Modifying an existing airport...");
-                    System.out.print("Enter the airport's ICAO: ");
-                    String modifyICAO = scanner.next();
-                    Airport modifyAirport = airportManager.searchAirport(modifyICAO);
-                    if (modifyAirport != null) {
-                        System.out.print("Enter the airport's new latitude: ");
-                        double newLatitude = scanner.nextDouble();
-                        System.out.print("Enter the airport's new longitude: ");
-                        double newLongitude = scanner.nextDouble();
-                        System.out.print("Enter the airport's new name: ");
-                        String newName = scanner.next();
-                        System.out.print("Enter the airport's new radio frequency (30 - 300 MHz for VHF): ");
-                        double newRadioFrequency = scanner.nextDouble();
-                        System.out.print("Enter the airport's new fuel type: ");
-                        String newFuelType = scanner.next();
-                        modifyAirport.setLatitude(newLatitude);
-                        modifyAirport.setLongitude(newLongitude);
-                        modifyAirport.setName(newName);
-                        modifyAirport.setRadioFrequency(newRadioFrequency); // Set the new radio frequency
-                        modifyAirport.setFuelType(newFuelType);
-                        // Radio type remains VHF and is not changed
-                        try {
-                            airportManager.modifyAirport(modifyICAO, modifyAirport);
-                        } catch (IllegalArgumentException e) {
-                            System.err.println("Error modifying airport: " + e.getMessage());
-                        }
-                    } else {
-                        System.out.println("Airport with ICAO " + modifyICAO + " not found.");
-                    }
-                    break;
-                case 3:
-                    System.out.println("Deleting an existing airport...");
-                    System.out.print("Enter the airport's ICAO: ");
-                    String deleteICAO = scanner.next();
-                    Airport deleteAirport = airportManager.searchAirport(deleteICAO);
-                    if (deleteAirport != null) {
-                        airportManager.deleteAirport(deleteAirport);
-                    } else {
-                        System.out.println("Airport with ICAO " + deleteICAO + " not found.");
-                    }
-                    break;
-                case 4:
-                    System.out.println("Displaying all airports...");
-                    airportManager.displayAirports();
-                    break;
-                case 5:
-                    System.out.println("Displaying an airport by ICAO...");
-                    System.out.print("Enter the airport's ICAO: ");
-                    String displayICAO = scanner.next();
-                    airportManager.searchAirport(displayICAO);
-                    break;
-                case 6:
-                    System.out.println("Exiting the airport management interface.");
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }
-    }
-
-    // Method to manage flight paths
-    public static void manageFlightPaths(Scanner scanner) {
-        AirplaneManager airplaneManager = AirplaneManager.getInstance();
-        FlightPath flightPath = new FlightPath();
-
-        while (true) {
-            System.out.println("\nManage Flight Paths");
-            System.out.println("1. Create Flight Path");
-            System.out.println("2. Modify Flight Path");
-            System.out.println("3. Delete Flight Path");
-            System.out.println("4. Display Flight Paths");
-            System.out.println("5. Display Flight Path by Key");
-            System.out.println("6. Display the heading of a flight path");
-            System.out.println("7. Exit");
-            System.out.print("Please select an option: ");
-
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Creating a new flight path...");
-                    System.out.print("Enter the flight path's key: ");
-                    int key = scanner.nextInt();
-                    System.out.print("Enter the flight path's starting airport: ");
-                    String startingAirport = scanner.next();
-                    System.out.print("Enter the flight path's middle airport(s) (separated by ;): ");
-                    String middleAirports = scanner.next();
-                    System.out.print("Enter the flight path's ending airport: ");
-                    String endingAirport = scanner.next();
-                    System.out.print("Enter the flight path's airplane's key: ");
-                    int airplaneKey = scanner.nextInt();
-                    try {
-                        FlightPath newFlightPath = new FlightPath(key, startingAirport,
-                                Arrays.asList(middleAirports.split(";")), endingAirport,
-                                airplaneManager.searchAirplane(airplaneKey));
-                        FlightPath.createFlightPath(newFlightPath);
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Error creating flight path: " + e.getMessage());
-                    }
-                    break;
-                case 2:
-                    System.out.println("Modifying an existing flight path...");
-                    System.out.print("Enter the flight path's key: ");
-                    int modifyKey = scanner.nextInt();
-                    FlightPath modifyFlightPath = flightPath.searchFlightPath(modifyKey);
-                    if (modifyFlightPath != null) {
-                        System.out.print("Enter the flight path's starting airport: ");
-                        modifyFlightPath.setStartingAirport(scanner.next());
-                        System.out.print("Enter the flight path's middle airport(s) (separated by ;): ");
-                        modifyFlightPath.setMiddleAirports(Arrays.asList(scanner.next().split(";")));
-                        System.out.print("Enter the flight path's ending airport: ");
-                        modifyFlightPath.setEndingAirport(scanner.next());
-                        System.out.print("Enter the flight path's airplane's key: ");
-                        modifyFlightPath.getAirplane().setKey(scanner.nextInt());
-                        try {
-                            FlightPath.modifyFlightPath(modifyKey, modifyFlightPath);
-                        } catch (IllegalArgumentException e) {
-                            System.err.println("Error modifying flight path: " + e.getMessage());
-                        }
-                    } else {
-                        System.out.println("Flight path with key " + modifyKey + " not found.");
-                    }
-                    break;
-                case 3:
-                    System.out.println("Deleting an existing flight path...");
-                    System.out.print("Enter the flight path's key: ");
-                    int deleteKey = scanner.nextInt();
-                    FlightPath deleteFlightPath = flightPath.searchFlightPath(deleteKey);
-                    if (deleteFlightPath != null) {
-                        FlightPath.deleteFlightPath(deleteKey);
-                    } else {
-                        System.out.println("Flight path with key " + deleteKey + " not found.");
-                    }
-                    break;
-                case 4:
-                    System.out.println("Displaying all flight paths...");
-                    flightPath.displayFlightPaths();
-                    break;
-                case 5:
-                    System.out.println("Displaying a flight path by key...");
-                    System.out.print("Enter the flight path's key: ");
-                    int displayKey = scanner.nextInt();
-                    System.out.println(flightPath.searchFlightPath(displayKey));
-                    break;
-                case 6:
-                    System.out.println("Displaying the heading of a flight path...");
-                    System.out.print("Enter the flight path's key: ");
-                    int headingKey = scanner.nextInt();
-                    System.out.println("Heading: " + flightPath.searchFlightPath(headingKey).calculateHeading());
-                    break;
-                case 7:
-                    System.out.println("Exiting the flight path management interface.");
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }
-    }
+    /*
+     * // Method to manage airplanes
+     * public static void manageAirplanes(Scanner scanner) {
+     * AirplaneManager airplaneManager = AirplaneManager.getInstance();
+     * 
+     * while (true) {
+     * System.out.println("\nManage Airplanes");
+     * System.out.println("1. Create Airplane");
+     * System.out.println("2. Modify Airplane");
+     * System.out.println("3. Delete Airplane");
+     * System.out.println("4. Display Airplanes");
+     * System.out.println("5. Display Airplane by Key");
+     * System.out.println("6. Exit");
+     * System.out.print("Please select an option: ");
+     * 
+     * int choice = scanner.nextInt();
+     * 
+     * switch (choice) {
+     * case 1:
+     * System.out.println("Creating a new airplane...");
+     * System.out.print("Enter the airplane's airspeed: ");
+     * double airspeed = scanner.nextDouble();
+     * System.out.print("Enter the airplane's fuel burn: ");
+     * double fuelBurn = scanner.nextDouble();
+     * System.out.print("Enter the airplane's fuel capacity: ");
+     * double fuelCapacity = scanner.nextDouble();
+     * System.out.print("Enter the airplane's fuel type: ");
+     * String fuelType = scanner.next();
+     * System.out.print("Enter the airplane's key: ");
+     * int key = scanner.nextInt();
+     * System.out.print("Enter the airplane's make: ");
+     * String make = scanner.next();
+     * System.out.print("Enter the airplane's model: ");
+     * String model = scanner.next();
+     * System.out.print("Enter the airplane's type: ");
+     * String type = scanner.next();
+     * try {
+     * airplaneManager.createAirplane(
+     * new Airplane(airspeed, fuelBurn, fuelCapacity, fuelType, key, make, model,
+     * type));
+     * } catch (IllegalArgumentException e) {
+     * System.err.println("Error creating airplane: " + e.getMessage());
+     * }
+     * break;
+     * case 2:
+     * System.out.println("Modifying an existing airplane...");
+     * System.out.print("Enter the airplane's key: ");
+     * int modifyKey = scanner.nextInt();
+     * Airplane modifyAirplane = airplaneManager.searchAirplane(modifyKey);
+     * if (modifyAirplane != null) {
+     * System.out.print("Enter the airplane's airspeed: ");
+     * modifyAirplane.setAirspeed(scanner.nextDouble());
+     * System.out.print("Enter the airplane's fuel burn: ");
+     * modifyAirplane.setFuelBurn(scanner.nextDouble());
+     * System.out.print("Enter the airplane's fuel capacity: ");
+     * modifyAirplane.setFuelCapacity(scanner.nextDouble());
+     * System.out.print("Enter the airplane's fuel type: ");
+     * modifyAirplane.setFuelType(scanner.next());
+     * System.out.print("Enter the airplane's make: ");
+     * modifyAirplane.setMake(scanner.next());
+     * System.out.print("Enter the airplane's model: ");
+     * modifyAirplane.setModel(scanner.next());
+     * System.out.print("Enter the airplane's type: ");
+     * modifyAirplane.setType(scanner.next());
+     * try {
+     * airplaneManager.modifyAirplane(modifyKey, modifyAirplane);
+     * } catch (IllegalArgumentException e) {
+     * System.err.println("Error modifying airplane: " + e.getMessage());
+     * }
+     * } else {
+     * System.out.println("Airplane with key " + modifyKey + " not found.");
+     * }
+     * break;
+     * case 3:
+     * System.out.println("Deleting an existing airplane...");
+     * System.out.print("Enter the airplane's key: ");
+     * int deleteKey = scanner.nextInt();
+     * Airplane deleteAirplane = airplaneManager.searchAirplane(deleteKey);
+     * if (deleteAirplane != null) {
+     * airplaneManager.deleteAirplane(deleteAirplane);
+     * } else {
+     * System.out.println("Airplane with key " + deleteKey + " not found.");
+     * }
+     * break;
+     * case 4:
+     * System.out.println("Displaying all airplanes...");
+     * airplaneManager.displayAirplanes();
+     * break;
+     * case 5:
+     * System.out.println("Displaying an airplane by key...");
+     * System.out.print("Enter the airplane's key: ");
+     * int displayKey = scanner.nextInt();
+     * airplaneManager.searchAirplane(displayKey);
+     * break;
+     * case 6:
+     * System.out.println("Exiting the airplane management interface.");
+     * return;
+     * default:
+     * System.out.println("Invalid option. Please try again.");
+     * }
+     * }
+     * }
+     * 
+     * // Method to manage airports
+     * public static void manageAirports(Scanner scanner) {
+     * AirportManager airportManager = AirportManager.getInstance();
+     * 
+     * while (true) {
+     * System.out.println("\nManage Airports");
+     * System.out.println("1. Create Airport");
+     * System.out.println("2. Modify Airport");
+     * System.out.println("3. Delete Airport");
+     * System.out.println("4. Display Airports");
+     * System.out.println("5. Display Airport by ICAO");
+     * System.out.println("6. Exit");
+     * System.out.print("Please select an option: ");
+     * 
+     * int choice = scanner.nextInt();
+     * 
+     * switch (choice) {
+     * case 1:
+     * System.out.println("Creating a new airport...");
+     * System.out.print("Enter the airport's ICAO: ");
+     * String ICAO = scanner.next();
+     * System.out.
+     * print("Enter the airport's radio frequency (30 - 300 MHz for VHF): ");
+     * double radioFrequency = scanner.nextDouble();
+     * System.out.print("Enter the airport's latitude: ");
+     * double latitude = scanner.nextDouble();
+     * System.out.print("Enter the airport's longitude: ");
+     * double longitude = scanner.nextDouble();
+     * System.out.print("Enter the airport's name: ");
+     * String name = scanner.next();
+     * System.out.print("Enter the airport's fuel type: ");
+     * String fuelType = scanner.next();
+     * try {
+     * airportManager.createAirport(
+     * new Airport(ICAO, radioFrequency, "VHF", fuelType, latitude, longitude,
+     * name));
+     * } catch (IllegalArgumentException e) {
+     * System.err.println("Error creating airport: " + e.getMessage());
+     * }
+     * break;
+     * case 2:
+     * System.out.println("Modifying an existing airport...");
+     * System.out.print("Enter the airport's ICAO: ");
+     * String modifyICAO = scanner.next();
+     * Airport modifyAirport = airportManager.searchAirport(modifyICAO);
+     * if (modifyAirport != null) {
+     * System.out.print("Enter the airport's new latitude: ");
+     * double newLatitude = scanner.nextDouble();
+     * System.out.print("Enter the airport's new longitude: ");
+     * double newLongitude = scanner.nextDouble();
+     * System.out.print("Enter the airport's new name: ");
+     * String newName = scanner.next();
+     * System.out.
+     * print("Enter the airport's new radio frequency (30 - 300 MHz for VHF): ");
+     * double newRadioFrequency = scanner.nextDouble();
+     * System.out.print("Enter the airport's new fuel type: ");
+     * String newFuelType = scanner.next();
+     * modifyAirport.setLatitude(newLatitude);
+     * modifyAirport.setLongitude(newLongitude);
+     * modifyAirport.setName(newName);
+     * modifyAirport.setRadioFrequency(newRadioFrequency); // Set the new radio
+     * frequency
+     * modifyAirport.setFuelType(newFuelType);
+     * // Radio type remains VHF and is not changed
+     * try {
+     * airportManager.modifyAirport(modifyICAO, modifyAirport);
+     * } catch (IllegalArgumentException e) {
+     * System.err.println("Error modifying airport: " + e.getMessage());
+     * }
+     * } else {
+     * System.out.println("Airport with ICAO " + modifyICAO + " not found.");
+     * }
+     * break;
+     * case 3:
+     * System.out.println("Deleting an existing airport...");
+     * System.out.print("Enter the airport's ICAO: ");
+     * String deleteICAO = scanner.next();
+     * Airport deleteAirport = airportManager.searchAirport(deleteICAO);
+     * if (deleteAirport != null) {
+     * airportManager.deleteAirport(deleteAirport);
+     * } else {
+     * System.out.println("Airport with ICAO " + deleteICAO + " not found.");
+     * }
+     * break;
+     * case 4:
+     * System.out.println("Displaying all airports...");
+     * airportManager.displayAirports();
+     * break;
+     * case 5:
+     * System.out.println("Displaying an airport by ICAO...");
+     * System.out.print("Enter the airport's ICAO: ");
+     * String displayICAO = scanner.next();
+     * airportManager.searchAirport(displayICAO);
+     * break;
+     * case 6:
+     * System.out.println("Exiting the airport management interface.");
+     * return;
+     * default:
+     * System.out.println("Invalid option. Please try again.");
+     * }
+     * }
+     * }
+     * 
+     * // Method to manage flight paths
+     * public static void manageFlightPaths(Scanner scanner) {
+     * AirplaneManager airplaneManager = AirplaneManager.getInstance();
+     * FlightPath flightPath = new FlightPath();
+     * 
+     * while (true) {
+     * System.out.println("\nManage Flight Paths");
+     * System.out.println("1. Create Flight Path");
+     * System.out.println("2. Modify Flight Path");
+     * System.out.println("3. Delete Flight Path");
+     * System.out.println("4. Display Flight Paths");
+     * System.out.println("5. Display Flight Path by Key");
+     * System.out.println("6. Display the heading of a flight path");
+     * System.out.println("7. Exit");
+     * System.out.print("Please select an option: ");
+     * 
+     * int choice = scanner.nextInt();
+     * 
+     * switch (choice) {
+     * case 1:
+     * System.out.println("Creating a new flight path...");
+     * System.out.print("Enter the flight path's key: ");
+     * int key = scanner.nextInt();
+     * System.out.print("Enter the flight path's starting airport: ");
+     * String startingAirport = scanner.next();
+     * System.out.
+     * print("Enter the flight path's middle airport(s) (separated by ;): ");
+     * String middleAirports = scanner.next();
+     * System.out.print("Enter the flight path's ending airport: ");
+     * String endingAirport = scanner.next();
+     * System.out.print("Enter the flight path's airplane's key: ");
+     * int airplaneKey = scanner.nextInt();
+     * try {
+     * FlightPath newFlightPath = new FlightPath(key, startingAirport,
+     * Arrays.asList(middleAirports.split(";")), endingAirport,
+     * airplaneManager.searchAirplane(airplaneKey));
+     * FlightPath.createFlightPath(newFlightPath);
+     * } catch (IllegalArgumentException e) {
+     * System.err.println("Error creating flight path: " + e.getMessage());
+     * }
+     * break;
+     * case 2:
+     * System.out.println("Modifying an existing flight path...");
+     * System.out.print("Enter the flight path's key: ");
+     * int modifyKey = scanner.nextInt();
+     * FlightPath modifyFlightPath = flightPath.searchFlightPath(modifyKey);
+     * if (modifyFlightPath != null) {
+     * System.out.print("Enter the flight path's starting airport: ");
+     * modifyFlightPath.setStartingAirport(scanner.next());
+     * System.out.
+     * print("Enter the flight path's middle airport(s) (separated by ;): ");
+     * modifyFlightPath.setMiddleAirports(Arrays.asList(scanner.next().split(";")));
+     * System.out.print("Enter the flight path's ending airport: ");
+     * modifyFlightPath.setEndingAirport(scanner.next());
+     * System.out.print("Enter the flight path's airplane's key: ");
+     * modifyFlightPath.getAirplane().setKey(scanner.nextInt());
+     * try {
+     * FlightPath.modifyFlightPath(modifyKey, modifyFlightPath);
+     * } catch (IllegalArgumentException e) {
+     * System.err.println("Error modifying flight path: " + e.getMessage());
+     * }
+     * } else {
+     * System.out.println("Flight path with key " + modifyKey + " not found.");
+     * }
+     * break;
+     * case 3:
+     * System.out.println("Deleting an existing flight path...");
+     * System.out.print("Enter the flight path's key: ");
+     * int deleteKey = scanner.nextInt();
+     * FlightPath deleteFlightPath = flightPath.searchFlightPath(deleteKey);
+     * if (deleteFlightPath != null) {
+     * FlightPath.deleteFlightPath(deleteKey);
+     * } else {
+     * System.out.println("Flight path with key " + deleteKey + " not found.");
+     * }
+     * break;
+     * case 4:
+     * System.out.println("Displaying all flight paths...");
+     * flightPath.displayFlightPaths();
+     * break;
+     * case 5:
+     * System.out.println("Displaying a flight path by key...");
+     * System.out.print("Enter the flight path's key: ");
+     * int displayKey = scanner.nextInt();
+     * System.out.println(flightPath.searchFlightPath(displayKey));
+     * break;
+     * case 6:
+     * System.out.println("Displaying the heading of a flight path...");
+     * System.out.print("Enter the flight path's key: ");
+     * int headingKey = scanner.nextInt();
+     * System.out.println("Heading: " +
+     * flightPath.searchFlightPath(headingKey).calculateHeading());
+     * break;
+     * case 7:
+     * System.out.println("Exiting the flight path management interface.");
+     * return;
+     * default:
+     * System.out.println("Invalid option. Please try again.");
+     * }
+     * }
+     * }
+     */
 
     // Main method for the Flight System, used for creating an interface for the
     // user to interact with the flight path system
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        // Creating an instance of the AirportManager class
+        // Testing creationg of airports, and their nodes and edges
+        AirportManager manager = AirportManager.getInstance();
 
-        while (true) {
-            System.out.println("\nWelcome to the Flight System Interface!");
-            System.out.println("1. Manage Airplanes");
-            System.out.println("2. Manage Airports");
-            System.out.println("3. Manage Flight Paths");
-            System.out.println("4. Exit");
-            System.out.print("Please select an option: ");
+        Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+        Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
 
-            int choice = scanner.nextInt();
+        // Adding airports
+        manager.createAirport(atlanta);
+        manager.createAirport(toronto);
 
-            switch (choice) {
-                case 1:
-                    manageAirplanes(scanner);
-                    break;
-                case 2:
-                    manageAirports(scanner);
-                    break;
-                case 3:
-                    manageFlightPaths(scanner);
-                    break;
-                case 4:
-                    System.out.println("Exiting the Flight System Interface.");
-                    scanner.close();
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }
+        // Displaying nodes and edges to check if the airports and distances are
+        // correctly added
+        manager.displayNodesAndEdges();
+        // Testing of the FlightPath class
+        /*
+         * Scanner scanner = new Scanner(System.in);
+         * 
+         * while (true) {
+         * System.out.println("\nWelcome to the Flight System Interface!");
+         * System.out.println("1. Manage Airplanes");
+         * System.out.println("2. Manage Airports");
+         * System.out.println("3. Manage Flight Paths");
+         * System.out.println("4. Exit");
+         * System.out.print("Please select an option: ");
+         * 
+         * int choice = scanner.nextInt();
+         * 
+         * switch (choice) {
+         * case 1:
+         * manageAirplanes(scanner);
+         * break;
+         * case 2:
+         * manageAirports(scanner);
+         * break;
+         * case 3:
+         * manageFlightPaths(scanner);
+         * break;
+         * case 4:
+         * System.out.println("Exiting the Flight System Interface.");
+         * scanner.close();
+         * return;
+         * default:
+         * System.out.println("Invalid option. Please try again.");
+         * }
+         * }
+         */
     }
 }
