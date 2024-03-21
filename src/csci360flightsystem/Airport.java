@@ -6,7 +6,6 @@
 package csci360flightsystem;
 
 import java.util.Objects;
-import java.util.Vector;
 
 public class Airport {
     // Attributes of the Airport class

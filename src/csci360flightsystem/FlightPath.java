@@ -1,5 +1,3 @@
-package csci360flightsystem;
-
 /* Programmers: Group 7 (Appa, Jacob, Keenan, and Lance)
  * Program file name: FlightPath.java 
  * Description:  
@@ -7,6 +5,8 @@ package csci360flightsystem;
  * It can also search through the list of aiplanes and airports to find the correct flight path. The main method 
  * is used for creating an interface for the user to interact with the flight path system.
 */
+package csci360flightsystem;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.Scanner;
-
 
 public class FlightPath {
     // Attributes of the FlightPath class
@@ -144,7 +143,6 @@ public class FlightPath {
     // Method to delete a flight path
     public static void deleteFlightPath(int index) {
         flightPaths.remove(index);
-
         saveFlightPathsToFile("FlightLog.txt");
     }
 
@@ -478,7 +476,7 @@ public class FlightPath {
                     String middleAirports = scanner.next();
                     System.out.print("Enter the flight path's ending airport: ");
                     String endingAirport = scanner.next();
-                    System.out.print("Enter the flight path's airplane key: ");
+                    System.out.print("Enter the flight path's airplane's key: ");
                     int airplaneKey = scanner.nextInt();
                     try {
                         FlightPath newFlightPath = new FlightPath(key, startingAirport,
@@ -501,7 +499,7 @@ public class FlightPath {
                         modifyFlightPath.setMiddleAirports(Arrays.asList(scanner.next().split(";")));
                         System.out.print("Enter the flight path's ending airport: ");
                         modifyFlightPath.setEndingAirport(scanner.next());
-                        System.out.print("Enter the flight path's airplane key: ");
+                        System.out.print("Enter the flight path's airplane's key: ");
                         modifyFlightPath.getAirplane().setKey(scanner.nextInt());
                         try {
                             FlightPath.modifyFlightPath(modifyKey, modifyFlightPath);

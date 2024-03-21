@@ -13,9 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-
-
-
 public class AirportManager {
     
     private class AirportNode {
