@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class AirplaneManager {
+
+    // variable for file location
+    private static final String FILE_LOCATION = "src/csci360flightsystem/Airplanes.txt";
+
     // Vector list of airplanes
     private Vector<Airplane> airplanes;
 
@@ -21,7 +25,7 @@ public class AirplaneManager {
     // Private constructor for the AirplaneManager class
     private AirplaneManager() {
         airplanes = new Vector<>();
-        loadAirplanesFromFile("Airplanes.txt");
+        loadAirplanesFromFile(FILE_LOCATION);
     }
 
     // Methods for the
@@ -54,13 +58,13 @@ public class AirplaneManager {
 
         // Add the airplane to the list
         airplanes.add(airplane);
-        saveAirplanesToFile("Airplanes.txt");
+        saveAirplanesToFile(FILE_LOCATION);
     }
 
     // Method to delete an airplane
     public void deleteAirplane(Airplane airplane) {
         airplanes.remove(airplane);
-        saveAirplanesToFile("Airplanes.txt");
+        saveAirplanesToFile(FILE_LOCATION);
     }
 
     // Method to display all airplanes
@@ -88,7 +92,7 @@ public class AirplaneManager {
                 // Update the airplane details but keep the original key
                 newAirplane.setKey(existingAirplane.getKey());
                 airplanes.set(i, newAirplane);
-                saveAirplanesToFile("Airplanes.txt");
+                saveAirplanesToFile(FILE_LOCATION);
                 return;
             }
         }

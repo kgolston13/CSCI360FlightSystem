@@ -1,5 +1,0 @@
-/* Programmers: Group 7 (Appa, Jacob, Keenan, and Lance)
- * Program file name: FlightLog.txt 
- * Description:  
- * Text file for storing flight logs
-*/ 

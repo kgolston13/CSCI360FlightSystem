@@ -15,6 +15,9 @@ import java.util.Vector;
 
 public class AirportManager {
 
+    // variable for file location
+    private static final String FILE_LOCATION = "src/csci360flightsystem/Airports.txt";
+
     private class AirportNode {
         private Airport airport;
         private Map<AirportNode, Double> edges;
@@ -49,7 +52,7 @@ public class AirportManager {
     public AirportManager() {
         airports = new Vector<>();
         airportGraph = new HashMap<>();
-        loadAirportsFromFile("Airports.txt");
+        loadAirportsFromFile(FILE_LOCATION);
     }
 
     // Methods for the AirportManager class
@@ -70,7 +73,7 @@ public class AirportManager {
                 airport.getRadioFrequency() < 30 || airport.getRadioFrequency() > 300 ||
                 airport.getName() == null || airport.getName().trim().isEmpty() ||
                 airport.getFuelType() == null || airport.getFuelType().trim().isEmpty() ||
-                (airport.getICAO().charAt(0) != 'C' || airport.getICAO().charAt(0) != 'K')) {
+                (airport.getICAO().charAt(0) != 'C' && airport.getICAO().charAt(0) != 'K')) {
             System.out.println("Invalid airport data provided.");
             return;
         }
@@ -85,7 +88,7 @@ public class AirportManager {
 
         // Add the airport to the list
         airports.add(airport);
-        saveAirportsToFile("Airports.txt");
+        saveAirportsToFile(FILE_LOCATION);
 
         // Add the airport to the graph ======================= BUGGGED?! NEEDS FIXING
         AirportNode newNode = new AirportNode(airport);
@@ -100,13 +103,13 @@ public class AirportManager {
         }
 
         // Save airports to file
-        saveAirportsToFile("Airports.txt");
+        saveAirportsToFile(FILE_LOCATION);
     }
 
     // Method to delete an airport
     public void deleteAirport(Airport airport) {
         airports.remove(airport);
-        saveAirportsToFile("Airports.txt");
+        saveAirportsToFile(FILE_LOCATION);
     }
 
     // Method to display all airports
@@ -155,7 +158,7 @@ public class AirportManager {
                 // Update the airport details without changing the ICAO code
                 newAirport.setICAO(icao);
                 airports.set(i, newAirport);
-                saveAirportsToFile("Airports.txt");
+                saveAirportsToFile(FILE_LOCATION);
                 return;
             }
         }

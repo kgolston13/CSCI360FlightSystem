@@ -17,6 +17,10 @@ import java.util.Vector;
 import java.util.Scanner;
 
 public class FlightPath {
+
+    // Variables for file location
+    private static final String FILE_LOCATION = "src/csci360flightsystem/FlightLog.txt";
+
     // Attributes of the FlightPath class
     // key, starting airport, middle airport(s), ending airport, airplane
 
@@ -94,7 +98,7 @@ public class FlightPath {
     // Constructor for the FlightPath class
     public FlightPath() {
         flightPaths = new Vector<>();
-        loadFlightPathsFromFile("FlightLog.txt");
+        loadFlightPathsFromFile(FILE_LOCATION);
     }
 
     // Methods for the FlightPath class
@@ -115,7 +119,7 @@ public class FlightPath {
         }
 
         flightPaths.add(flightPath);
-        saveFlightPathsToFile("FlightLog.txt");
+        saveFlightPathsToFile(FILE_LOCATION);
     }
 
     // Method to modify an existing flight path
@@ -133,7 +137,7 @@ public class FlightPath {
                 // Ensure the key is not modified
                 newFlightPath.setKey(key);
                 flightPaths.set(i, newFlightPath);
-                saveFlightPathsToFile("FlightLog.txt");
+                saveFlightPathsToFile(FILE_LOCATION);
                 return;
             }
         }
@@ -143,7 +147,7 @@ public class FlightPath {
     // Method to delete a flight path
     public static void deleteFlightPath(int index) {
         flightPaths.remove(index);
-        saveFlightPathsToFile("FlightLog.txt");
+        saveFlightPathsToFile(FILE_LOCATION);
     }
 
     // Method to display flight paths
