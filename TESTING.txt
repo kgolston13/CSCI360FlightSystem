@@ -9,3 +9,6 @@ double distance = AirportManager.calculateDistance(airport1, airport2);
 
 // Display the distance
 System.out.println("Distance between Airport1 and Airport2: " + distance + " miles");
+
+// Call the displayNodesAndEdges method to display all nodes and edges
+airportManager.displayNodesAndEdges();

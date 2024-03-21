@@ -552,18 +552,6 @@ public class FlightPath {
     // user to interact with the flight path system
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        
-        AirportManager airportManager = AirportManager.getInstance();
-        
-        // Call the displayNodesAndEdges method to display all nodes and edges
-        airportManager.displayNodesAndEdges();
-        
-        Airport airport1 = new Airport("ICAO1", 123.45, "Type1", "Fuel1", 40.7128, -74.0060, "Airport1");
-        Airport airport2 = new Airport("ICAO2", 234.56, "Type2", "Fuel2", 34.0522, -118.2437, "Airport2");
-        
-        // Calculate distance between airports
-        double distance = AirportManager.calculateDistance(airport1, airport2);
-        System.out.println("Distance between Airport1 and Airport2: " + distance + " miles");
 
         while (true) {
             System.out.println("\nWelcome to the Flight System Interface!");
