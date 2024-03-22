@@ -150,7 +150,7 @@ public class FlightPath {
     }
 
     // Method to display flight paths
-    public void displayFlightPaths() {
+    public static void displayFlightPaths() {
         for (FlightPath flightPath : flightPaths) {
             System.out.println(flightPath);
         }
@@ -173,20 +173,16 @@ public class FlightPath {
     }
 
     // Method to calulate the heading of the flight path
-    public double calculateHeading() {
-        AirportManager airportManager = AirportManager.getInstance();
+    public static double calculateHeading(Airport startingAirport, Airport endingAirport) {
 
-        Airport start = airportManager.searchAirport(this.startingAirport);
-        Airport end = airportManager.searchAirport(this.endingAirport);
-
-        if (start == null || end == null) {
+        if (startingAirport == null || endingAirport == null) {
             throw new IllegalStateException("Start or end airport not found.");
         }
 
-        double lat1 = Math.toRadians(start.getLatitude());
-        double lon1 = Math.toRadians(start.getLongitude());
-        double lat2 = Math.toRadians(end.getLatitude());
-        double lon2 = Math.toRadians(end.getLongitude());
+        double lat1 = Math.toRadians(startingAirport.getLatitude());
+        double lon1 = Math.toRadians(startingAirport.getLongitude());
+        double lat2 = Math.toRadians(endingAirport.getLatitude());
+        double lon2 = Math.toRadians(endingAirport.getLongitude());
 
         double dLon = lon2 - lon1;
 
@@ -195,6 +191,29 @@ public class FlightPath {
         double theta = Math.atan2(y, x);
 
         return (Math.toDegrees(theta) + 360) % 360;
+    }
+
+    // Direction based on heading
+    public static String direction(double heading) {
+        if ((heading >= 0 && heading <= 22.5) || (heading > 337.5 && heading <= 360)) {
+            return "North";
+        } else if (heading > 22.5 && heading <= 67.5) {
+            return "Northeast";
+        } else if (heading > 67.5 && heading <= 112.5) {
+            return "East";
+        } else if (heading > 112.5 && heading <= 157.5) {
+            return "Southeast";
+        } else if (heading > 157.5 && heading <= 202.5) {
+            return "South";
+        } else if (heading > 202.5 && heading <= 247.5) {
+            return "Southwest";
+        } else if (heading > 247.5 && heading <= 292.5) {
+            return "West";
+        } else if (heading > 292.5 && heading <= 337.5) {
+            return "Northwest";
+        } else {
+            return "Unknown";
+        }
     }
 
     // Load flight paths from file
@@ -248,5 +267,10 @@ public class FlightPath {
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
+    }
+
+    // Main method for the FlightPath class
+    public static void main(String[] args) {
+
     }
 }

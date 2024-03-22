@@ -18,3 +18,9 @@ TO CONSTUCTORS. =======> .getInstance is used to call the single instance of air
 the single instance of airportManager prevents the creation of multiple airportManagers. CONSTUCTORS and 
 methods are being set up to call the instance correctly. 
 SOLVED?
+
+FINISH IMPLEMENTATION OF THE LAUNCHFLIGHT METHOD IN FLIGHTPATH.JAVA. 
+UNSOLVED
+
+FINISH DEVELOPING THE USER INTERFACE
+UNSOLVED
