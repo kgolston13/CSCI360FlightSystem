@@ -167,6 +167,24 @@ public class FlightPath {
     }
 
     // Method to launch a flight based on the flight path
+    /* This method is incomplete and will not run as intended at the moment.
+     * The flight logic will be added in the future to allow the flight to be launched.
+     * Current pseudo code:
+     * 1. Get the flight path
+     * 2. Check to see if direct flight from start to end is possible (compare distance to airplane flight range)
+     * 3. If not possible, select middle airports between start and end with the same heading that the airplane can fly to
+     * 4. If no middle airports are found, select middle airports with slightly different headings
+     * 5. Once middle airports are found, generate all possible flight paths
+     * 6. Choose the flight path based off the shortest total distance
+     * 7. Launch the flight
+     * 8. Output
+     * Need: 
+     * - Method to calculate the heading of the flight path
+     * - Method to calculate the distance between two airports
+     * - Method to calculate how far the airplane can fly
+     * Other:
+     * Every stop the airplane makes will refuel. If fuel is not available, the airplane will not be able to continue.
+     */
     public void launchFlight(FlightPath flightPath) {
         // Flight logic to be added here in the future
         System.out.println("Flight launched based on flight path: " + flightPath);
