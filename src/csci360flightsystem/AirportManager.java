@@ -165,6 +165,7 @@ public class AirportManager {
         System.out.println("Airport with ICAO " + icao + " not found.");
     }
 
+    // Method to calculate the distance between two airports
     public static double calculateDistance(Airport startingAirport, Airport endingAirport) {
         // Earth's radius in kilometers
         final double R = 6371.0;

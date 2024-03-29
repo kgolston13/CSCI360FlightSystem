@@ -183,7 +183,7 @@ public class FlightPath {
      * - Method to calculate the distance between two airports
      * - Method to calculate how far the airplane can fly
      * Other:
-     * Every stop the airplane makes will refuel. If fuel is not available, the airplane will not be able to continue.
+     * Every stop the airplane makes will refuel. If fuel type the airplane needs does not match the airport, the airplane will not be able to continue.
      */
     public void launchFlight(FlightPath flightPath) {
         // Flight logic to be added here in the future

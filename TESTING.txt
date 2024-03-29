@@ -2,6 +2,74 @@
 
 
 
+//List of real world airports for reference
+Airport newYorkJFK = new Airport("KJFK", 123.90, "VHF", "JetA", 40.6413, -73.7781, "New York JFK");
+Airport sanFrancisco = new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco");
+Airport miami = new Airport("KMIA", 119.15, "VHF", "JetA", 25.7959, -80.2870, "Miami");
+Airport dallasFtWorth = new Airport("KDFW", 135.00, "VHF", "JetA", 32.8998, -97.0403, "Dallas/Ft Worth");
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+Airport vancouver = new Airport("CYVR", 119.55, "VHF", "JetA", 49.1947, -123.1838, "Vancouver");
+Airport montreal = new Airport("CYUL", 121.90, "VHF", "JetA", 45.4715, -73.7408, "Montreal");
+Airport calgary = new Airport("CYYC", 118.20, "VHF", "JetA", 51.1139, -114.0203, "Calgary");
+Airport edmonton = new Airport("CYEG", 121.70, "VHF", "JetA", 53.3097, -113.5799, "Edmonton");
+
+
+
+// Testing creation of airports, distance calculation, display of nodes and edges, 
+// display a list of all airports, modify existing airports, delete an airport, 
+// and search for an airport.
+// Creating an instance of the AirportManager class
+AirportManager manager = AirportManager.getInstance();
+
+// Test 1: Creating and adding airports
+System.out.println("Test 1: Creating and adding airports");
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+manager.createAirport(atlanta);
+manager.createAirport(toronto);
+
+// Displaying all airports after addition
+System.out.println("Displaying all airports after addition:");
+manager.displayAirports();
+
+// Test 2: Calculating distance between two airports
+System.out.println("Test 2: Calculating distance between Atlanta and Toronto");
+double distance = AirportManager.calculateDistance(atlanta, toronto);
+System.out.println("Distance between Atlanta and Toronto is: " + distance + " kilometers");
+
+// Test 3: Displaying nodes and edges
+System.out.println("Test 3: Displaying nodes and edges");
+manager.displayNodesAndEdges();
+
+// Test 4: Modifying an existing airport
+System.out.println("Test 4: Modifying an existing airport");
+Airport modifiedToronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.7771, -79.6276, "Toronto Mod");
+manager.modifyAirport("CYYZ", modifiedToronto);
+
+// Displaying all airports after modification
+System.out.println("Displaying all airports after modification:");
+manager.displayAirports();
+
+// Test 5: Deleting an airport
+System.out.println("Test 5: Deleting an airport");
+manager.deleteAirport(modifiedToronto);
+
+// Displaying all airports after deletion
+System.out.println("Displaying all airports after deletion:");
+manager.displayAirports();
+
+// Test 6: Searching for an airport
+System.out.println("Test 6: Searching for an airport");
+Airport searchResult = manager.searchAirport("KATL");
+if (searchResult != null) {
+    System.out.println("Found airport: " + searchResult.getName());
+} else {
+    System.out.println("Airport not found.");
+}
+
+
+
 //List of real world airplanes for reference
 airplanes
 Airplane boeing737 = new Airplane(588, 2600, 6800, "JetA", 1, "Boeing", "737", "Commercial");
@@ -17,37 +85,49 @@ Airplane cessna172 = new Airplane(226, 500, 240, "JetA", 10, "Cessna", "172", "P
 
 
 
-//List of real world airports for reference
-Airport newYorkJFK = new Airport("KJFK", 123.90, "VHF", "JetA", 40.6413, -73.7781, "New York JFK");
-Airport sanFrancisco = new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco");
-Airport miami = new Airport("KMIA", 119.15, "VHF", "JetA", 25.7959, -80.2870, "Miami");
-Airport dallasFtWorth = new Airport("KDFW", 135.00, "VHF", "JetA", 32.8998, -97.0403, "Dallas/Ft Worth");
-Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
-Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
-Airport vancouver = new Airport("CYVR", 119.55, "VHF", "JetA", 49.1947, -123.1838, "Vancouver");
-Airport montreal = new Airport("CYUL", 121.90, "VHF", "JetA", 45.4715, -73.7408, "Montreal");
-Airport calgary = new Airport("CYYC", 118.20, "VHF", "JetA", 51.1139, -114.0203, "Calgary");
-Airport edmonton = new Airport("CYEG", 121.70, "VHF", "JetA", 53.3097, -113.5799, "Edmonton");
+// Testing creation of airplanes, calculate flight range, search for an airplane,
+// display a list of all airplanes, modify existing airplanes, and delete an airplane.
+// Creating an instance of the AirplaneManager class
+AirplaneManager airplaneManager = AirplaneManager.getInstance();
 
+// Test 1: Creating and adding airplanes
+System.out.println("Test 1: Creating and adding airplanes");
+Airplane boeing737 = new Airplane(588, 2600, 6800, "JetA", 1, "Boeing", "737", "Commercial");
+Airplane airbusA320 = new Airplane(541, 2400, 6300, "JetA", 2, "Airbus", "A320", "Commercial");
+airplaneManager.createAirplane(boeing737);
+airplaneManager.createAirplane(airbusA320);
 
+// Displaying all airplanes after addition
+System.out.println("Displaying all airplanes after addition:");
+airplaneManager.displayAirplanes();
 
-// Testing creation of airports, distance calculation, and display of nodes and edges
-// Creating an instance of the AirportManager class
-AirportManager manager = AirportManager.getInstance();
+// Test 2: Modifying an existing airplane
+System.out.println("Test 2: Modifying an existing airplane");
+Airplane modifiedAirbus = new Airplane(545, 2450, 6350, "JetA1", 2, "Airbus", "A320neo", "Commercial");
+airplaneManager.modifyAirplane(2, modifiedAirbus);
 
-Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
-Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+// Displaying all airplanes after modification
+System.out.println("Displaying all airplanes after modification:");
+airplaneManager.displayAirplanes();
 
-// Adding airports
-manager.createAirport(atlanta);
-manager.createAirport(toronto);
+// Test 3: Deleting an airplane
+System.out.println("Test 3: Deleting an airplane");
+airplaneManager.deleteAirplane(modifiedAirbus);
 
-// Calculate distance between airports
-double distance = AirportManager.calculateDistance(atlanta, toronto);
+// Displaying all airplanes after deletion
+System.out.println("Displaying all airplanes after deletion:");
+airplaneManager.displayAirplanes();
 
-// Display the distance
-System.out.println("Distance between Atlanta and Toronto is: " + distance + "kilometers");
+// Test 4: Searching for an airplane
+System.out.println("Test 4: Searching for an airplane");
+Airplane searchResult = airplaneManager.searchAirplane(1);
+if (searchResult != null) {
+    System.out.println("Found airplane: " + searchResult.getMake() + " " + searchResult.getModel());
+} else {
+    System.out.println("Airplane not found.");
+}
 
-// Displaying nodes and edges to check if the airports and distances are
-// correctly added
-manager.displayNodesAndEdges();
+// Test 5: Calculating the flight range of an airplane
+System.out.println("Test 5: Calculating the flight range of an airplane");
+double flightRange = airplaneManager.calculateFlightRange(boeing737);
+System.out.println("The flight range of the Boeing 737 is: " + flightRange + " kilometers (or miles, depending on the units used for airspeed)");

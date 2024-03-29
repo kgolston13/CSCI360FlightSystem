@@ -100,6 +100,19 @@ public class AirplaneManager {
         System.out.println("Airplane with key " + key + " not found.");
     }
 
+    // Method to calculate the distance an airplane can fly
+    public double calculateFlightRange(Airplane airplane) {
+        if (airplane == null) {
+            throw new IllegalArgumentException("Airplane cannot be null.");
+        }
+        // Ensure fuel burn and airspeed are not zero to avoid division by zero.
+        if (airplane.fuelBurn == 0 || airplane.airspeed == 0) {
+            throw new IllegalArgumentException("Fuel burn and airspeed must be greater than zero.");
+        }
+
+        return (airplane.fuelCapacity / airplane.fuelBurn) * airplane.airspeed;
+    }
+
     // Method to search for an airplane by key
     public Airplane searchAirplane(int key) {
         for (Airplane airplane : airplanes) {
