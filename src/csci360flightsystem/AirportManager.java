@@ -18,9 +18,9 @@ public class AirportManager {
     // variable for file location
     private static final String FILE_LOCATION = "src/csci360flightsystem/Airports.txt";
 
-    private class AirportNode {
+    public class AirportNode {
         private Airport airport;
-        private Map<AirportNode, Double> edges;
+        public Map<AirportNode, Double> edges;
 
         public AirportNode(Airport airport) {
             this.airport = airport;

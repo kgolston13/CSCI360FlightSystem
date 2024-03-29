@@ -12,7 +12,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import java.util.Vector;
 
 public class FlightPath {
@@ -166,28 +170,66 @@ public class FlightPath {
         return null; // Return null if flight path with specified key is not found
     }
 
-    // Method to launch a flight based on the flight path
-    /* This method is incomplete and will not run as intended at the moment.
-     * The flight logic will be added in the future to allow the flight to be launched.
-     * Current pseudo code:
-     * 1. Get the flight path
-     * 2. Check to see if direct flight from start to end is possible (compare distance to airplane flight range)
-     * 3. If not possible, select middle airports between start and end with the same heading that the airplane can fly to
-     * 4. If no middle airports are found, select middle airports with slightly different headings
-     * 5. Once middle airports are found, generate all possible flight paths
-     * 6. Choose the flight path based off the shortest total distance
-     * 7. Launch the flight
-     * 8. Output
-     * Need: 
-     * - Method to calculate the heading of the flight path
-     * - Method to calculate the distance between two airports
-     * - Method to calculate how far the airplane can fly
-     * Other:
-     * Every stop the airplane makes will refuel. If fuel type the airplane needs does not match the airport, the airplane will not be able to continue.
-     */
+    // Method to search for a flight path by starting and ending airports
     public void launchFlight(FlightPath flightPath) {
-        // Flight logic to be added here in the future
-        System.out.println("Flight launched based on flight path: " + flightPath);
+        AirportManager airportManager = AirportManager.getInstance();
+        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+        Airport startingAirport = airportManager.searchAirport(flightPath.getStartingAirport());
+        Airport endingAirport = airportManager.searchAirport(flightPath.getEndingAirport());
+        Airplane airplane = flightPath.getAirplane();
+
+        double flightRange = airplaneManager.calculateFlightRange(airplane);
+
+        // Check direct flight is possible based on the flight range and fuel type
+        if (AirportManager.calculateDistance(startingAirport, endingAirport) <= flightRange &&
+                startingAirport.getFuelType().equalsIgnoreCase(airplane.getFuelType())) {
+
+            System.out.println("Direct flight is possible. Launching flight...");
+            // Logic to launch the direct flight
+        } else {
+            // Depth-first search to find a connecting path with refueling stops
+            if (isPathAvailable(startingAirport, endingAirport, flightRange, airportManager, airplane.getFuelType())) {
+                System.out.println("Connecting flight path found. Launching flight...");
+                // Logic to launch the flight with layovers
+            } else {
+                System.out.println("No viable connecting flight path found. Cannot launch flight.");
+            }
+        }
+    }
+
+    // Method to check if a path is available with refueling stops
+    private boolean isPathAvailable(Airport start, Airport end, double range, AirportManager airportManager,
+            String requiredFuelType) {
+        Set<String> visited = new HashSet<>();
+        Stack<AirportManager.AirportNode> stack = new Stack<>();
+        stack.push(airportManager.new AirportNode(start));
+
+        while (!stack.isEmpty()) {
+            AirportManager.AirportNode node = stack.pop();
+            Airport currentAirport = node.getAirport();
+            visited.add(currentAirport.getICAO());
+
+            if (currentAirport.getICAO().equals(end.getICAO())) {
+                return true; // Found a path
+            }
+
+            // Push all unvisited and reachable airports onto the stack
+            for (Map.Entry<AirportManager.AirportNode, Double> edge : node.edges.entrySet()) {
+                AirportManager.AirportNode adjacentNode = edge.getKey();
+                Airport nextAirport = adjacentNode.getAirport();
+                double distanceToNextAirport = edge.getValue();
+
+                // Check if the next airport has the required fuel type and is within range
+                if (!visited.contains(nextAirport.getICAO()) &&
+                        distanceToNextAirport <= range &&
+                        nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
+
+                    stack.push(adjacentNode);
+                }
+            }
+        }
+        return false; // No path found
     }
 
     // Method to calulate the heading of the flight path
