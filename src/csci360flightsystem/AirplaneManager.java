@@ -100,7 +100,7 @@ public class AirplaneManager {
         System.out.println("Airplane with key " + key + " not found.");
     }
 
-    // Method to calculate the distance an airplane can fly
+    // Method to calculate the distance an airplane can fly in kilometers
     public double calculateFlightRange(Airplane airplane) {
         if (airplane == null) {
             throw new IllegalArgumentException("Airplane cannot be null.");
