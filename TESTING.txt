@@ -130,4 +130,4 @@ if (searchResult != null) {
 // Test 5: Calculating the flight range of an airplane
 System.out.println("Test 5: Calculating the flight range of an airplane");
 double flightRange = airplaneManager.calculateFlightRange(boeing737);
-System.out.println("The flight range of the Boeing 737 is: " + flightRange + " kilometers (or miles, depending on the units used for airspeed)");
+System.out.println("The flight range of the Boeing 737 is: " + flightRange + " kilometers");
