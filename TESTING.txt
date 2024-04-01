@@ -104,7 +104,7 @@ airplaneManager.displayAirplanes();
 // Test 2: Modifying an existing airplane
 System.out.println("Test 2: Modifying an existing airplane");
 Airplane modifiedAirbus = new Airplane(905, 2400, 18380, "Jet A-1", 1, "Neo Airbus", "A320", "Commercial Jet");
-airplaneManager.modifyAirplane(2, modifiedAirbus);
+airplaneManager.modifyAirplane(1, modifiedAirbus);
 
 // Displaying all airplanes after modification
 System.out.println("Displaying all airplanes after modification:");
