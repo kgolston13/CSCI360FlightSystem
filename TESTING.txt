@@ -131,3 +131,21 @@ if (searchResult != null) {
 System.out.println("Test 5: Calculating the flight range of an airplane");
 double flightRange = airplaneManager.calculateFlightRange(boeing737);
 System.out.println("The flight range of the Boeing 737 is: " + flightRange + " kilometers");
+
+
+
+// Testing creation of flightpaths, modifying existing flightpaths, deleting existing flightpaths, 
+// display a specific flightpath by key, calculating the heading and direction, and launching a flight, 
+// and displaying all flight paths. 
+
+// Test 1: Creating a flight path
+// Displaying all flight paths
+
+// Test 2: Modifying an existing fligh path and displaying it
+
+// Test 3: Deleting a flight path and attempting to display it
+// Displaying all flight paths
+
+// Test 4: Calculate the heading and direction of a flight
+
+// Test 5: Launching a flight
