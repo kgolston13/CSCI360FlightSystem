@@ -1,10 +1,4 @@
-/* Programmers: Group 7 (Appa, Jacob, Keenan, and Lance)
- * Program file name: FlightPath.java 
- * Description:  
- * This class has the capability to create and display the flight path of an airplane from one airport to another. 
- * It can also search through the list of aiplanes and airports to find the correct flight path. The main method 
- * is used for creating an interface for the user to interact with the flight path system.
-*/
+
 package csci360flightsystem;
 
 import java.io.BufferedReader;
@@ -332,5 +326,30 @@ public class FlightPath {
     // Main method for the FlightPath class
     public static void main(String[] args) {
 
+AirportManager manager = AirportManager.getInstance();
+
+// Test 1: Creating and adding airports
+System.out.println("\nTest 1: Creating and adding airports");
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+manager.createAirport(atlanta);
+manager.createAirport(toronto);
+
+// Displaying all airports after addition
+System.out.println("Displaying all airports after addition:");
+manager.displayAirports();
+
+// Test 2: Calculating distance between two airports
+System.out.println("\n\nTest 2: Calculating distance between Atlanta and Toronto");
+double distance = AirportManager.calculateDistance(atlanta, toronto);
+System.out.println("Distance between Atlanta and Toronto is: " + distance + " kilometers\n\n");
+
+// Test 3: Displaying nodes and edges
+System.out.println("Test 3: Displaying nodes and edges");
+manager.displayNodesAndEdges();
+
+
+
+        
     }
 }

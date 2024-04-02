@@ -16,8 +16,10 @@ import java.util.Vector;
 public class AirportManager {
 
     // variable for file location
-    private static final String FILE_LOCATION = "src/csci360flightsystem/Airports.txt";
+    private static final String FILE_LOCATION = "CSCI360FlightSystem/src/csci360flightsystem/Airports.txt";
 
+
+    //CSCI360FlightSystem/src/csci360flightsystem/Airplanes.txt
     // Nested class for the AirportNode
     public class AirportNode {
         private Airport airport;
@@ -65,6 +67,13 @@ public class AirportManager {
         return instance;
     }
 
+    //Method to load all currently documented/saved airports.
+    //This method is called at the beginning of the main method 
+    //Along with the LoadingAirplanes() method
+    public static void loadAirports(){
+
+    }
+
     // Method to create a new airport
     public void createAirport(Airport airport) {
         // Validate the airport object
@@ -89,7 +98,6 @@ public class AirportManager {
 
         // Add the airport to the list
         airports.add(airport);
-        saveAirportsToFile(FILE_LOCATION);
 
         // Add the airport to the graph ======================= BUGGGED?! NEEDS FIXING
         AirportNode newNode = new AirportNode(airport);
@@ -122,7 +130,16 @@ public class AirportManager {
 
     // Method to display all nodes and their edges
     public void displayNodesAndEdges() {
+
+        for (Airport airport : airports) {
+            
+            
+            System.out.println(airport);
+        }
+
         System.out.println("Nodes and their corresponding edges:");
+
+        
 
         // Iterate over each node in the airportGraph
         for (Map.Entry<String, AirportNode> entry : airportGraph.entrySet()) {
@@ -206,17 +223,52 @@ public class AirportManager {
             while ((line = reader.readLine()) != null) {
                 // Split the line by comma to extract attributes
                 String[] attributes = line.split(",");
-                // Create a new Airport object from attributes and add it to the vector
-                airports.add(new Airport(attributes[0],
+                // Create a new Airport object from attributes
+                Airport airport = new Airport(attributes[0],
                         Double.parseDouble(attributes[1]),
                         attributes[2],
                         attributes[3],
                         Double.parseDouble(attributes[4]),
                         Double.parseDouble(attributes[5]),
-                        attributes[6]));
+                        attributes[6]);
+                // Add the airport to the airports vector
+                airports.add(airport);
+                // Create a new AirportNode for the airport
+                AirportNode newNode = new AirportNode(airport);
+                // Add the airport node to the airportGraph map
+                airportGraph.put(airport.getICAO(), newNode);
             }
+            
+            // Now that all airports are loaded, create edges between them
+            createEdges();
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage());
+        }
+    }
+    
+    // Method to create edges between airports
+    private void createEdges() {
+        // Iterate over each node in the airportGraph
+        for (Map.Entry<String, AirportNode> entry : airportGraph.entrySet()) {
+            String airportCode = entry.getKey();
+            AirportNode node = entry.getValue();
+    
+            // Iterate over all other nodes to create edges
+            for (Map.Entry<String, AirportNode> otherEntry : airportGraph.entrySet()) {
+                String otherAirportCode = otherEntry.getKey();
+                AirportNode otherNode = otherEntry.getValue();
+    
+                // Skip if the nodes are the same or already have an edge between them
+                if (airportCode.equals(otherAirportCode) || node.edges.containsKey(otherNode)) {
+                    continue;
+                }
+    
+                // Calculate the distance between the airports
+                double distance = calculateDistance(node.getAirport(), otherNode.getAirport());
+                // Add edge between the nodes
+                node.addEdge(otherNode, distance);
+                otherNode.addEdge(node, distance);
+            }
         }
     }
 
