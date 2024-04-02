@@ -16,7 +16,7 @@ import java.util.Vector;
 public class AirportManager {
 
     // variable for file location
-    private static final String FILE_LOCATION = "CSCI360FlightSystem/src/csci360flightsystem/Airports.txt";
+    private static final String FILE_LOCATION = "src\\csci360flightsystem\\Airports.txt";
 
 
     //CSCI360FlightSystem/src/csci360flightsystem/Airplanes.txt
