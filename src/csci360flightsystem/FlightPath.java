@@ -1,4 +1,10 @@
-
+/* Programmers: Group 7 (Appa, Jacob, Keenan, and Lance)
+ * Program file name: FlightPath.java 
+ * Description:  
+ * This class has the capability to create, modify, delete, and display the flight path of an airplane from one airport to another. 
+ * It can also search through the list of aiplanes and airports to find the correct flight path. The main method 
+ * is used for creating an interface for the user to interact with the flight path system.
+*/
 package csci360flightsystem;
 
 import java.io.BufferedReader;
