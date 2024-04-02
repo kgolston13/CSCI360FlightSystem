@@ -20,6 +20,7 @@ public class FlightPath {
 
     // Attributes of the FlightPath class
     // key, starting airport, middle airport(s), ending airport, airplane
+    //changed location of txt
 
     // The unique identifier of an airplane, represented by type int.
     public int key;
