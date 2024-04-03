@@ -50,7 +50,7 @@ public class AirportManager {
     // Static instance for the singleton pattern
     private static AirportManager instance;
 
-    // Private constructor for the AirportManager class
+    // Public constructor for the AirportManager class
     public AirportManager() {
         airports = new Vector<>();
         airportGraph = new HashMap<>();
@@ -98,7 +98,7 @@ public class AirportManager {
         // Add the airport to the list
         airports.add(airport);
 
-        // Add the airport to the graph 
+        // Add the airport to the graph
         AirportNode newNode = new AirportNode(airport);
         airportGraph.put(airport.getICAO(), newNode);
 
