@@ -102,7 +102,7 @@ public class AirportManager {
         // Add the airport to the list
         airports.add(airport);
 
-        // Add the airport to the graph ======================= BUGGGED?! NEEDS FIXING
+        // Add the airport to the graph 
         AirportNode newNode = new AirportNode(airport);
         airportGraph.put(airport.getICAO(), newNode);
 
