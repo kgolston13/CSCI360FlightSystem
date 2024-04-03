@@ -17,7 +17,7 @@ public class Airplane {
     public double fuelCapacity;
     // The type of fuel an airplane uses, represented by type string
     public String fuelType;
-    // The unique identifier of an airplane, represented by type int.
+    // The unique identifier of an airplane, represented by type String.
     public int key;
     // The make of an airplane, represented by type string.
     public String make;
@@ -40,6 +40,11 @@ public class Airplane {
     }
 
     // Getters and setters for the Airplane class
+    public double getMaxRange() {
+        double range = getFuelCapacity() / getFuelBurn();
+        return range;
+    }
+
     public double getAirspeed() {
         return airspeed;
     }

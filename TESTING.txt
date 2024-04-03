@@ -13,6 +13,17 @@ Airport vancouver = new Airport("CYVR", 119.55, "VHF", "JetA", 49.1947, -123.183
 Airport montreal = new Airport("CYUL", 121.90, "VHF", "JetA", 45.4715, -73.7408, "Montreal");
 Airport calgary = new Airport("CWES", 140.77, "VHF", "JetA", 0, 180.00, "Far West");
 Airport edmonton = new Airport("CNOR", 299.99, "VHF", "JetA", 90.00, 0, "Santa's Workshop");
+Airport minneapolis = new Airport("KMSP", )
+
+//Initialize airports
+airportManager.createAirport(new Airport("KJFK", 123.90, "VHF", "JetA", 40.6413, -73.7781, "New York JFK"));
+airportManager.createAirport(new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco"));
+airportManager.createAirport(new Airport("KMIA", 119.15, "VHF", "JetA", 25.7959, -80.2870, "Miami"));
+airportManager.createAirport(new Airport("KDFW", 135.00, "VHF", "JetA", 32.8998, -97.0403, "Dallas/Ft Worth"));
+airportManager.createAirport(new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta"));
+airportManager.createAirport(new Airport("CYUL", 121.90, "VHF", "JetA", 45.4715, -73.7408, "Montreal"));
+airportManager.createAirport(new Airport("CWES", 140.77, "VHF", "JetA", 0, 180.00, "Far West"));
+airportManager.createAirport(new Airport("CNOR", 299.99, "VHF", "JetA", 90.00, 0, "Santa's Workshop"));
 
 
 

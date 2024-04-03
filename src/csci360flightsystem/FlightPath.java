@@ -26,7 +26,7 @@ public class FlightPath {
 
     // Attributes of the FlightPath class
     // key, starting airport, middle airport(s), ending airport, airplane
-    //changed location of txt
+    // changed location of txt
 
     // The unique identifier of an airplane, represented by type int.
     public int key;
@@ -332,6 +332,23 @@ public class FlightPath {
 
     // Main method for the FlightPath class
     public static void main(String[] args) {
-        
+
+        AirportManager airportManager = AirportManager.getInstance();
+
+        // Call the method directly with parameters
+        List<Airport> shortestFlightPath = airportManager.searchForShortestFlightPath(
+                /* startingAirport */ airportManager.searchAirport("CYYZ"),
+                /* endingAirport */ airportManager.searchAirport("KJFK"),
+                /* maxDistanceBetweenNodes */ 580, // This value will be replaced by plane max distance
+                /* fuelTypeOfPlane */"JetA");                                   // This value will be set by Airplane.getFuelType()
+
+        // Check if a path is found
+        if (shortestFlightPath != null) {
+            // Print the shortest flight path
+            System.out.println("Shortest Flight Path:");
+            for (Airport airport : shortestFlightPath) {
+                System.out.println(airport);
+            }
+        }
     }
 }

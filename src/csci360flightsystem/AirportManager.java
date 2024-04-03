@@ -9,8 +9,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Vector;
 
 public class AirportManager {
@@ -18,8 +22,7 @@ public class AirportManager {
     // variable for file location
     private static final String FILE_LOCATION = "src\\csci360flightsystem\\Airports.txt";
 
-
-    //CSCI360FlightSystem/src/csci360flightsystem/Airplanes.txt
+    // CSCI360FlightSystem/src/csci360flightsystem/Airplanes.txt
     // Nested class for the AirportNode
     public class AirportNode {
         private Airport airport;
@@ -67,10 +70,10 @@ public class AirportManager {
         return instance;
     }
 
-    //Method to load all currently documented/saved airports.
-    //This method is called at the beginning of the main method 
-    //Along with the LoadingAirplanes() method
-    public static void loadAirports(){
+    // Method to load all currently documented/saved airports.
+    // This method is called at the beginning of the main method
+    // Along with the LoadingAirplanes() method
+    public static void loadAirports() {
 
     }
 
@@ -132,14 +135,11 @@ public class AirportManager {
     public void displayNodesAndEdges() {
 
         for (Airport airport : airports) {
-            
-            
+
             System.out.println(airport);
         }
 
         System.out.println("Nodes and their corresponding edges:");
-
-        
 
         // Iterate over each node in the airportGraph
         for (Map.Entry<String, AirportNode> entry : airportGraph.entrySet()) {
@@ -238,31 +238,31 @@ public class AirportManager {
                 // Add the airport node to the airportGraph map
                 airportGraph.put(airport.getICAO(), newNode);
             }
-            
+
             // Now that all airports are loaded, create edges between them
             createEdges();
         } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage());
         }
     }
-    
+
     // Method to create edges between airports
     private void createEdges() {
         // Iterate over each node in the airportGraph
         for (Map.Entry<String, AirportNode> entry : airportGraph.entrySet()) {
             String airportCode = entry.getKey();
             AirportNode node = entry.getValue();
-    
+
             // Iterate over all other nodes to create edges
             for (Map.Entry<String, AirportNode> otherEntry : airportGraph.entrySet()) {
                 String otherAirportCode = otherEntry.getKey();
                 AirportNode otherNode = otherEntry.getValue();
-    
+
                 // Skip if the nodes are the same or already have an edge between them
                 if (airportCode.equals(otherAirportCode) || node.edges.containsKey(otherNode)) {
                     continue;
                 }
-    
+
                 // Calculate the distance between the airports
                 double distance = calculateDistance(node.getAirport(), otherNode.getAirport());
                 // Add edge between the nodes
@@ -288,4 +288,73 @@ public class AirportManager {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
+
+    public List<Airport> searchForShortestFlightPath(Airport startingAirport, Airport endingAirport,
+            double maxDistanceBetweenNodes, String fuelTypeOfPlane) {
+        // Check if either starting or ending airports are null
+        if (startingAirport == null || endingAirport == null) {
+            System.out.println("Invalid airports provided.");
+            return null;
+        }
+
+        // Create a map to keep track of visited airports
+        Map<Airport, Boolean> visited = new HashMap<>();
+        for (Airport airport : airports) {
+            visited.put(airport, false);
+        }
+
+        // Create a queue for BFS
+        Queue<List<Airport>> queue = new LinkedList<>();
+        List<Airport> path = new ArrayList<>();
+        path.add(startingAirport);
+        queue.offer(path);
+
+        while (!queue.isEmpty()) {
+            path = queue.poll();
+            Airport lastAirport = path.get(path.size() - 1);
+
+            // If the last airport in the path is the ending airport, return the path
+            if (lastAirport.equals(endingAirport)) {
+                return path;
+            }
+
+            // Check if the airport has been visited, if not, mark it as visited
+            if (!visited.get(lastAirport)) {
+                visited.put(lastAirport, true);
+
+                // Get all neighboring airports
+                List<Airport> neighbors = getNeighbors(lastAirport, maxDistanceBetweenNodes, fuelTypeOfPlane);
+
+                // Add neighbors to the queue
+                for (Airport neighbor : neighbors) {
+                    List<Airport> newPath = new ArrayList<>(path);
+                    newPath.add(neighbor);
+                    queue.offer(newPath);
+                }
+            }
+        }
+
+        // If no path is found
+        System.out.println("No path found with current parameters.");
+        return null;
+    }
+
+    // Helper method to get neighboring airports within the maximum distance
+    private List<Airport> getNeighbors(Airport airport, double maxDistance, String fuelTypeOfPlane) {
+        List<Airport> neighbors = new ArrayList<>();
+        AirportNode node = airportGraph.get(airport.getICAO());
+
+        // Iterate through neighboring airports
+        for (Map.Entry<AirportNode, Double> entry : node.edges.entrySet()) {
+            AirportNode neighborNode = entry.getKey();
+            Airport neighborAirport = neighborNode.getAirport();
+            double distance = entry.getValue();
+            if (distance <= maxDistance && neighborAirport.getFuelType().equalsIgnoreCase(fuelTypeOfPlane)) { // FuelTypeComparator
+                neighbors.add(neighborNode.getAirport());
+            }
+        }
+
+        return neighbors;
+    }
+
 }
