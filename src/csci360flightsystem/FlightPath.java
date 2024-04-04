@@ -411,54 +411,6 @@ public class FlightPath {
 
     // Main method for the FlightPath class
     public static void main(String[] args) {
-        // Testing creation of flightpaths, modifying existing flightpaths, deleting
-        // existing flightpaths,
-        // display a specific flightpath by key, calculating the heading and direction,
-        // and launching a flight,
-        // and displaying all flight paths.
 
-        // Add three airports for testing
-        AirportManager manager = AirportManager.getInstance();
-        Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
-        Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
-        Airport sanFrancisco = new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco");
-        manager.createAirport(atlanta);
-        manager.createAirport(toronto);
-        manager.createAirport(sanFrancisco);
-
-        // Add an airplane for testing
-        AirplaneManager airplaneManager = AirplaneManager.getInstance();
-        Airplane boeing737 = new Airplane(850, 2600, 12600, "Jet A-1", 0, "Boeing", "737-800", "Commercial Jet");
-        airplaneManager.createAirplane(boeing737);
-
-        // Test 1: Creating a flight path and display it
-        System.out.println("Test 1: Creating a flight path");
-        FlightPath flightPath1 = new FlightPath(1, "Atlanta", "Toronto", boeing737);
-        createFlightPath(flightPath1);
-        displayFlightPaths();
-
-        // Test 2: Modifying an existing fligh path and display it
-        System.out.println("Test 2: Modifying an existing flight path");
-        updateStartingAirport(1, "San Francisco");
-        updateEndingAirport(1, "Toronto");
-        displayFlightPaths();
-
-        // Test 3: Calculate the heading and direction of a flight
-        System.out.println("Test 3: Calculate the heading and direction of a flight");
-        System.out.println("Heading: " + calculateHeading(atlanta, toronto) + " degrees" + " ("
-                + direction(calculateHeading(atlanta, toronto)) + ")");
-
-        // Test 4: Launching a flight
-        System.out.println("Test 4: Launching a flight");
-        if (flightPath1.getStartingAirport() != null && flightPath1.getEndingAirport() != null) {
-            flightPath1.launchFlight(flightPath1);
-        } else {
-            System.out.println("Flight cannot be launched due to invalid airports.");
-        }
-
-        // Test 5: Deleting a flight path and attempting to display it
-        System.out.println("Test 5: Deleting a flight path");
-        deleteFlightPath(1);
-        displayFlightPaths();
     }
 }
