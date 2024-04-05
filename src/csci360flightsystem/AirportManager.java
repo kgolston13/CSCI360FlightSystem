@@ -75,13 +75,17 @@ public class AirportManager {
 
     // Method to create a new airport
     public void createAirport(Airport airport) {
+        // Convert the ICAO code to uppercase
+        airport.setICAO(airport.getICAO().toUpperCase());
+
         // Validate the airport object
         if (airport.getICAO().length() != 4 ||
                 airport.getLatitude() < -90 || airport.getLatitude() > 90 ||
                 airport.getLongitude() < -180 || airport.getLongitude() > 180 ||
                 airport.getRadioFrequency() < 30 || airport.getRadioFrequency() > 300 ||
                 airport.getName() == null || airport.getName().trim().isEmpty() ||
-                airport.getFuelType() == null || airport.getFuelType().trim().isEmpty() ||
+                airport.getFuelType() == null || airport.getFuelType().trim().isEmpty() || 
+                airport.getName().length() > 36 ||
                 (airport.getICAO().charAt(0) != 'C' && airport.getICAO().charAt(0) != 'K')) {
             System.out.println("Invalid airport data provided.");
             return;
@@ -156,23 +160,26 @@ public class AirportManager {
 
     // Method to modify an existing airport
     public void modifyAirport(String icao, Airport newAirport) {
+        String searchIcao = icao.toUpperCase();
+
         for (int i = 0; i < airports.size(); i++) {
-            if (airports.get(i).getICAO().equals(icao)) {
-                // Ensure the new ICAO code matches the existing one
-                if (!newAirport.getICAO().equals(icao) ||
-                        newAirport.getLatitude() < -90 || newAirport.getLatitude() > 90 ||
+            if (airports.get(i).getICAO().equalsIgnoreCase(searchIcao)) {
+                // Validate the new airport object except for the ICAO
+                if (newAirport.getLatitude() < -90 || newAirport.getLatitude() > 90 ||
                         newAirport.getLongitude() < -180 || newAirport.getLongitude() > 180 ||
                         newAirport.getRadioFrequency() < 30 || newAirport.getRadioFrequency() > 300 ||
                         newAirport.getName() == null || newAirport.getName().trim().isEmpty() ||
+                        newAirport.getName().length() > 36 ||
                         newAirport.getFuelType() == null || newAirport.getFuelType().trim().isEmpty()) {
                     System.out.println("Invalid airport data provided.");
                     return;
                 }
 
-                // Update the airport details without changing the ICAO code
-                newAirport.setICAO(icao);
+                // Update the airport details but keep the original ICAO code
+                newAirport.setICAO(airports.get(i).getICAO());
                 airports.set(i, newAirport);
                 saveAirportsToFile(FILE_LOCATION);
+                System.out.println("Airport details updated successfully.");
                 return;
             }
         }

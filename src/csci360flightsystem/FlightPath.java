@@ -410,7 +410,7 @@ public class FlightPath {
     }
 
     // Main method for the FlightPath class
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
 
-    }
+    // }
 }
