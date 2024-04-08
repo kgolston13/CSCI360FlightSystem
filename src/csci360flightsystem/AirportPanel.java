@@ -11,6 +11,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class AirportPanel extends JPanel {
     private JPanel graphPanel;
     private CardLayout cardLayout;
     private Airport selectedAirport;
-    private JTextField searchField;
+    private JTextField searchField = new JTextField(20);
     private Map<Rectangle, Airport> airportMap = new HashMap<>();
 
     // Constructor to initialize the Airport Panel
@@ -85,7 +86,6 @@ public class AirportPanel extends JPanel {
         return searchPanel;
     }
 
-    // Method to initialize the table
     private void initializeTable() {
         String[] columnNames = { "ICAO", "Radio Frequency", "Fuel Type", "Latitude", "Longitude", "Name" };
         airportTableModel = new DefaultTableModel(columnNames, 0) {
@@ -97,6 +97,15 @@ public class AirportPanel extends JPanel {
         airportsTable = new JTable(airportTableModel);
         airportsTable.getTableHeader().setReorderingAllowed(false); // Prevent column reordering
         loadAirportsData();
+
+        airportsTable.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && airportsTable.getSelectedRow() != -1) {
+                int modelRow = airportsTable.convertRowIndexToModel(airportsTable.getSelectedRow());
+                String icao = (String) airportTableModel.getValueAt(modelRow, 0);
+                selectedAirport = AirportManager.getInstance().searchAirport(icao);
+            }
+        });
+
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 search();
@@ -158,7 +167,6 @@ public class AirportPanel extends JPanel {
         }
     }
 
-    // Method to initialize the graph
     private void initializeGraph() {
         graphPanel = new JPanel() {
             Map<Rectangle, Airport> airportMap = new HashMap<>();
@@ -168,42 +176,64 @@ public class AirportPanel extends JPanel {
                 super.paintComponent(g);
                 airportMap.clear(); // Clear previous mappings
 
-                Vector<Airport> airports = AirportManager.getInstance().getAirports();
+                // Drawing the graph axes
                 int width = getWidth();
                 int height = getHeight();
 
-                for (Airport airport : airports) {
-                    int x = (int) ((airport.getLongitude() + 180) * (width / 360.0)) - 2;
-                    int y = (int) ((-airport.getLatitude() + 90) * (height / 180.0)) - 2;
-                    g.fillOval(x, y, 4, 4);
-                    airportMap.put(new Rectangle(x, y, 4, 4), airport);
+                // Draw Y-axis in the middle of the panel
+                int yAxisX = width / 2;
+                g.drawLine(yAxisX, 0, yAxisX, height);
+
+                // Draw X-axis in the middle of the panel
+                int xAxisY = height / 2;
+                g.drawLine(0, xAxisY, width, xAxisY);
+
+                // Label for Y-axis (Latitude)
+                g.drawString("Latitude", yAxisX + 5, 15);
+
+                // Label for X-axis (Longitude)
+                g.drawString("Longitude", width - 70, xAxisY - 5);
+
+                // Draw the airports
+                int dotDiameter = 10; // Increased dot size for better interaction
+                for (Airport airport : AirportManager.getInstance().getAirports()) {
+                    // Transform longitude and latitude to x and y coordinates
+                    int x = (int) ((airport.getLongitude() + 180) * (width / 360.0)) - dotDiameter / 2;
+                    int y = (int) ((-airport.getLatitude() + 90) * (height / 180.0)) - dotDiameter / 2;
+                    g.fillOval(x, y, dotDiameter, dotDiameter); // Draw the airport as a larger dot
+                    airportMap.put(new Rectangle(x, y, dotDiameter, dotDiameter), airport);
                 }
-                g.drawString("Latitude", 10, getHeight() - 10);
-                g.drawString("Longitude", getWidth() - 60, 10);
             }
         };
+
+        graphPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                boolean isCursorOverAirport = false;
+                for (Map.Entry<Rectangle, Airport> entry : airportMap.entrySet()) {
+                    if (entry.getKey().contains(e.getPoint())) {
+                        Airport hoveredAirport = entry.getValue();
+                        graphPanel.setToolTipText(getAirportDetails(hoveredAirport));
+                        isCursorOverAirport = true;
+                        break;
+                    }
+                }
+                if (!isCursorOverAirport) {
+                    graphPanel.setToolTipText(null);
+                }
+            }
+        });
 
         graphPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                selectedAirport = null; // Reset selection on each click
                 for (Map.Entry<Rectangle, Airport> entry : airportMap.entrySet()) {
                     if (entry.getKey().contains(e.getPoint())) {
                         selectedAirport = entry.getValue();
-                        break;
+                        return; // Exit the loop as we found the selected airport
                     }
                 }
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                for (Map.Entry<Rectangle, Airport> entry : airportMap.entrySet()) {
-                    if (entry.getKey().contains(e.getPoint())) {
-                        Airport hoveredAirport = entry.getValue();
-                        setToolTipText(getAirportDetails(hoveredAirport));
-                        return;
-                    }
-                }
-                setToolTipText(null); // Clear tooltip when not hovering over an airport
             }
         });
     }
