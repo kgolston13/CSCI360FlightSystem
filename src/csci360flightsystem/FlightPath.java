@@ -127,73 +127,32 @@ public class FlightPath {
         saveFlightPathsToFile(FILE_LOCATION);
     }
 
-    // Method to update the starting airport of a flight path
-    public static void updateStartingAirport(int key, String newStartingAirport) {
-        if (newStartingAirport == null || newStartingAirport.isEmpty()) {
-            System.out.println("Invalid starting airport.");
-            return;
-        }
-
-        boolean found = false;
+    // Method to modify a flight path
+    public static void modifyFlightPath(int key, FlightPath newFlightPathDetails) {
         for (FlightPath flightPath : flightPaths) {
             if (flightPath.getKey() == key) {
-                found = true;
-                flightPath.setStartingAirport(newStartingAirport);
+                // Found the flight path to modify
+
+                // Validate new details
+                if (newFlightPathDetails.getStartingAirport() == null ||
+                        newFlightPathDetails.getEndingAirport() == null ||
+                        newFlightPathDetails.getAirplane() == null) {
+                    System.out.println("Invalid flight path data provided.");
+                    return;
+                }
+
+                // Update the flight path details
+                flightPath.setStartingAirport(newFlightPathDetails.getStartingAirport());
+                flightPath.setEndingAirport(newFlightPathDetails.getEndingAirport());
+                flightPath.setAirplane(newFlightPathDetails.getAirplane());
+
                 saveFlightPathsToFile(FILE_LOCATION);
-                System.out.println("Starting airport updated successfully.");
-                break;
+                System.out.println("Flight path updated successfully.");
+                return;
             }
         }
 
-        if (!found) {
-            System.out.println("Flight path with key " + key + " not found.");
-        }
-    }
-
-    // Method to update the ending airport of a flight path
-    public static void updateEndingAirport(int key, String newEndingAirport) {
-        if (newEndingAirport == null || newEndingAirport.isEmpty()) {
-            System.out.println("Invalid ending airport.");
-            return;
-        }
-
-        boolean found = false;
-        for (FlightPath flightPath : flightPaths) {
-            if (flightPath.getKey() == key) {
-                found = true;
-                flightPath.setEndingAirport(newEndingAirport);
-                saveFlightPathsToFile(FILE_LOCATION);
-                System.out.println("Ending airport updated successfully.");
-                break;
-            }
-        }
-
-        if (!found) {
-            System.out.println("Flight path with key " + key + " not found.");
-        }
-    }
-
-    // Method to update the airplane of a flight path
-    public static void updateAirplane(int key, Airplane newAirplane) {
-        if (newAirplane == null) {
-            System.out.println("Invalid airplane.");
-            return;
-        }
-
-        boolean found = false;
-        for (FlightPath flightPath : flightPaths) {
-            if (flightPath.getKey() == key) {
-                found = true;
-                flightPath.setAirplane(newAirplane);
-                saveFlightPathsToFile(FILE_LOCATION);
-                System.out.println("Airplane updated successfully.");
-                break;
-            }
-        }
-
-        if (!found) {
-            System.out.println("Flight path with key " + key + " not found.");
-        }
+        System.out.println("Flight path with key " + key + " not found.");
     }
 
     // Method to delete a flight path
@@ -408,9 +367,4 @@ public class FlightPath {
                 ", airplane=" + airplane +
                 '}';
     }
-
-    // Main method for the FlightPath class
-    // public static void main(String[] args) {
-
-    // }
 }

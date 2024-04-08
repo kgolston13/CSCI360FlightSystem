@@ -173,8 +173,8 @@ System.out.println("The flight range of the Boeing 737 is: " + flightRange + " k
 
         // Test 2: Modifying an existing fligh path and display it
         System.out.println("Test 2: Modifying an existing flight path");
-        updateStartingAirport(1, "San Francisco");
-        updateEndingAirport(1, "Toronto");
+        FlightPath newFlightPathDetails = new FlightPath(1, "San Francisco", "Toronto", boeing737);
+        modifyFlightPath(1, newFlightPathDetails);
         displayFlightPaths();
 
         // Test 3: Calculate the heading and direction of a flight
