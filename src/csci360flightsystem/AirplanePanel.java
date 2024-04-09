@@ -59,8 +59,8 @@ public class AirplanePanel extends JPanel {
         airplanesTable.getSelectionModel().addListSelectionListener(event -> {
             if (!event.getValueIsAdjusting() && airplanesTable.getSelectedRow() != -1) {
                 int modelRow = airplanesTable.convertRowIndexToModel(airplanesTable.getSelectedRow());
-                int airplaneKey = (Integer) airplanesTable.getValueAt(modelRow, 0);
-                selectedAirplane = AirplaneManager.getInstance().searchAirplane(airplaneKey);
+                int Key = (int) airplaneTableModel.getValueAt(modelRow, 4);
+                selectedAirplane = AirplaneManager.getInstance().searchAirplane(Key);
             }
         });
 
