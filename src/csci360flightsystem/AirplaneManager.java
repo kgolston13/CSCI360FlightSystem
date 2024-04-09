@@ -19,6 +19,10 @@ public class AirplaneManager {
     // Vector list of airplanes
     private Vector<Airplane> airplanes;
 
+    public Vector<Airplane> getAirplanes() {
+        return airplanes;
+    }
+
     // Static instance for singleton pattern
     private static AirplaneManager instance;
 

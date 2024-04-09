@@ -167,6 +167,7 @@ public class AirportPanel extends JPanel {
         }
     }
 
+    // Method to initialize the graph panel
     private void initializeGraph() {
         graphPanel = new JPanel() {
             Map<Rectangle, Airport> airportMap = new HashMap<>();

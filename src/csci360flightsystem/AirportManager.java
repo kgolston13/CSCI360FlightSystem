@@ -84,7 +84,7 @@ public class AirportManager {
                 airport.getLongitude() < -180 || airport.getLongitude() > 180 ||
                 airport.getRadioFrequency() < 30 || airport.getRadioFrequency() > 300 ||
                 airport.getName() == null || airport.getName().trim().isEmpty() ||
-                airport.getFuelType() == null || airport.getFuelType().trim().isEmpty() || 
+                airport.getFuelType() == null || airport.getFuelType().trim().isEmpty() ||
                 airport.getName().length() > 36 ||
                 (airport.getICAO().charAt(0) != 'C' && airport.getICAO().charAt(0) != 'K')) {
             System.out.println("Invalid airport data provided.");
