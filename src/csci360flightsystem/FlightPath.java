@@ -181,7 +181,7 @@ public class FlightPath {
     }
 
     // Method to search for a flight path by key
-    public FlightPath searchFlightPath(int key) {
+    public static FlightPath searchFlightPath(int key) {
         for (FlightPath flightPath : flightPaths) {
             if (flightPath.getKey() == key) {
                 return flightPath;
