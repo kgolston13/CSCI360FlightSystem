@@ -1,0 +1,2 @@
+KGJW,45.0,VHF,Jet,40.0,50.0,First
+KEEJ,45.0,VHF,40,50.0,50.0,sdfe

@@ -101,6 +101,11 @@ public class FlightPath {
     // Vector list of flight paths
     private static Vector<FlightPath> flightPaths = new Vector<>();
 
+    // Public method to get the list of flight paths
+    public static Vector<FlightPath> getFlightPaths() {
+        return new Vector<>(flightPaths); // Return a copy of the flightPaths vector
+    }
+
     // Static instance for singleton pattern
     public FlightPath() {
         flightPaths = new Vector<>();
@@ -190,34 +195,46 @@ public class FlightPath {
         return null; // Return null if flight path with specified key is not found
     }
 
-    // Method to search for a flight path by starting and ending airports
     public void launchFlight(FlightPath flightPath) {
         AirportManager airportManager = AirportManager.getInstance();
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
-
+    
         Airport startingAirport = airportManager.searchAirport(flightPath.getStartingAirport());
         Airport endingAirport = airportManager.searchAirport(flightPath.getEndingAirport());
         Airplane airplane = flightPath.getAirplane();
-
+    
         double flightRange = airplaneManager.calculateFlightRange(airplane);
-
-        // Check direct flight is possible based on the flight range and fuel type
-        List<String> path = isPathAvailable(startingAirport, endingAirport, flightRange, airportManager,
-                airplane.getFuelType());
-
-        if (!path.isEmpty() && path.size() > 2) { // Path found and has intermediate stops
-            System.out.println("Connecting flight path found. Launching flight...");
-            // Add middle airports from the path to the flightPath object, excluding start
-            // and end
+    
+        List<String> path = isPathAvailable(startingAirport, endingAirport, flightRange, airportManager, airplane.getFuelType());
+    
+        if (!path.isEmpty() && path.size() >= 2) {
+            double totalDistance = 0;
+            Airport prevAirport = startingAirport;
+    
+            // Calculate the total distance by summing the distances of each leg
+            for (String airportCode : path) {
+                Airport nextAirport = airportManager.searchAirport(airportCode);
+                if (nextAirport != null && prevAirport != null) {
+                    totalDistance += AirportManager.calculateDistance(prevAirport, nextAirport);
+                    prevAirport = nextAirport;
+                }
+            }
+    
+            // Add middle airports from the path to the flightPath object, excluding start and end
+            flightPath.getMiddleAirports().clear();
             for (int i = 1; i < path.size() - 1; i++) {
                 flightPath.addMiddleAirport(path.get(i));
             }
-        } else if (path.size() == 2) {
-            System.out.println("Direct flight is possible. Launching flight...");
+    
+            // Calculate time
+            double time = totalDistance / airplane.getAirspeed(); // Assuming constant speed
+    
+            System.out.println("Flight path found. Total distance: " + totalDistance + " km. Estimated time: " + time + " hours.");
         } else {
-            System.out.println("No viable connecting flight path found. Cannot launch flight.");
+            System.out.println("No viable flight path found. Cannot launch flight.");
         }
     }
+    
 
     // Method to check if a path is available with refueling stops
     private List<String> isPathAvailable(Airport start, Airport end, double range, AirportManager airportManager,
