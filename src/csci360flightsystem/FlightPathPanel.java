@@ -112,7 +112,7 @@ public class FlightPathPanel extends JPanel {
             if (!event.getValueIsAdjusting() && flightPathsTable.getSelectedRow() != -1) {
                 int modelRow = flightPathsTable.convertRowIndexToModel(flightPathsTable.getSelectedRow());
                 int key = (Integer) flightPathTableModel.getValueAt(modelRow, 0);
-                selectedFlightPath = FlightPath.searchFlightPath(key);
+                selectedFlightPath = FlightPath.getInstance().searchFlightPath(key);
             }
         });
 
@@ -144,7 +144,7 @@ public class FlightPathPanel extends JPanel {
         String searchText = searchField.getText().trim();
         flightPathTableModel.setRowCount(0); // Clear existing data
 
-        for (FlightPath flightPath : FlightPath.getFlightPaths()) {
+        for (FlightPath flightPath : FlightPath.getInstance().getFlightPaths()) {
             String keyString = String.valueOf(flightPath.getKey());
 
             if (keyString.equals(searchText)) {
@@ -152,7 +152,7 @@ public class FlightPathPanel extends JPanel {
                         flightPath.getKey(),
                         flightPath.getStartingAirport(),
                         flightPath.getEndingAirport(),
-                        flightPath.getAirplane() != null ? flightPath.getAirplane().getKey() : "N/A"
+                        flightPath.getAirplane()
                 };
                 flightPathTableModel.addRow(rowData);
             }
@@ -162,14 +162,14 @@ public class FlightPathPanel extends JPanel {
     // Load flight paths data into the table model
     private void loadFlightPathsData() {
         flightPathTableModel.setRowCount(0); // Clear existing data in the table
-        Vector<FlightPath> flightPaths = FlightPath.getFlightPaths();
+        Vector<FlightPath> flightPaths = FlightPath.getInstance().getFlightPaths();
         // Iterate over each flight path and add it as a row to the table model
         for (FlightPath flightPath : flightPaths) {
             Object[] rowData = {
                     flightPath.getKey(),
                     flightPath.getStartingAirport(),
                     flightPath.getEndingAirport(),
-                    flightPath.getAirplane() != null ? flightPath.getAirplane().getKey() : "N/A"
+                    flightPath.getAirplane()
             };
             flightPathTableModel.addRow(rowData);
         }
@@ -204,14 +204,25 @@ public class FlightPathPanel extends JPanel {
                 g.drawString("Longitude", width - 70, xAxisY - 5);
 
                 // Draw the flight paths
-                for (FlightPath flightPath : FlightPath.getFlightPaths()) {
-                    drawFlightPath(g, flightPath, width, height);
+                if (selectedFlightPath != null) {
+                    drawFlightPath(g, selectedFlightPath, getWidth(), getHeight());
                 }
             }
 
             private void drawFlightPath(Graphics g, FlightPath flightPath, int width, int height) {
-                List<Airport> airports = new ArrayList<>();
+                // Ensure the flight path is selected
+                if (flightPath == null)
+                    return;
 
+                // Populate the list of airports based on the flight path details
+                List<Airport> airports = new ArrayList<>();
+                airports.add(AirportManager.getInstance().searchAirport(flightPath.getStartingAirport()));
+                for (String airportCode : flightPath.getMiddleAirports()) {
+                    airports.add(AirportManager.getInstance().searchAirport(airportCode));
+                }
+                airports.add(AirportManager.getInstance().searchAirport(flightPath.getEndingAirport()));
+
+                // Draw lines between consecutive airports
                 for (int i = 0; i < airports.size() - 1; i++) {
                     Airport start = airports.get(i);
                     Airport end = airports.get(i + 1);
@@ -225,9 +236,6 @@ public class FlightPathPanel extends JPanel {
                     int endY = (int) ((-end.getLatitude() + 90) * (height / 180.0));
 
                     g.drawLine(startX, startY, endX, endY);
-                    // Store the mapping for mouse interaction
-                    flightPathMap.put(new Rectangle(Math.min(startX, endX), Math.min(startY, endY),
-                            Math.abs(startX - endX), Math.abs(startY - endY)), flightPath);
                 }
             }
         };
@@ -285,7 +293,7 @@ public class FlightPathPanel extends JPanel {
                 }
 
                 FlightPath newFlightPath = new FlightPath(key, startingAirport, endingAirport, airplane);
-                FlightPath.createFlightPath(newFlightPath);
+                FlightPath.getInstance().createFlightPath(newFlightPath);
                 loadFlightPathsData(); // Refresh the table to show the new flight path
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Invalid input. Please enter numerical values for keys.");
@@ -334,7 +342,7 @@ public class FlightPathPanel extends JPanel {
                 // Since the starting or ending airports might have changed, clear the middle
                 // airports.
                 updatedFlightPath.setMiddleAirports(new ArrayList<>());
-                FlightPath.modifyFlightPath(selectedFlightPath.getKey(), updatedFlightPath);
+                FlightPath.getInstance().modifyFlightPath(selectedFlightPath.getKey(), updatedFlightPath);
                 loadFlightPathsData(); // Refresh the table to show the updated flight path
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Invalid input. Please enter a valid airplane key.");
@@ -354,7 +362,7 @@ public class FlightPathPanel extends JPanel {
                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (response == JOptionPane.YES_OPTION) {
-            FlightPath.deleteFlightPath(selectedFlightPath.getKey());
+            FlightPath.getInstance().deleteFlightPath(selectedFlightPath.getKey());
             loadFlightPathsData();
             selectedFlightPath = null; // Clear the selection
         }
@@ -370,7 +378,19 @@ public class FlightPathPanel extends JPanel {
         // Calculate total distance, time and get direction
         AirportManager airportManager = AirportManager.getInstance();
         Airport startingAirport = airportManager.searchAirport(selectedFlightPath.getStartingAirport());
+        List<String> middleAirportsCodes = selectedFlightPath.getMiddleAirports();
         Airport endingAirport = airportManager.searchAirport(selectedFlightPath.getEndingAirport());
+
+        StringBuilder radioFrequencies = new StringBuilder();
+        radioFrequencies.append("Starting airport radio frequency: ").append(startingAirport.getRadioFrequency())
+                .append("\n");
+        for (String code : middleAirportsCodes) {
+            Airport airport = airportManager.searchAirport(code);
+            radioFrequencies.append("Middle airport (").append(code).append(") radio frequency: ")
+                    .append(airport.getRadioFrequency()).append("\n");
+        }
+        radioFrequencies.append("Ending airport radio frequency: ").append(endingAirport.getRadioFrequency())
+                .append("\n");
 
         double totalDistance = 0; // Total distance initialization
         Airport prevAirport = startingAirport;
@@ -389,7 +409,7 @@ public class FlightPathPanel extends JPanel {
 
         String message = "Flight path found. \nTotal distance: " + totalDistance + " km.\n" +
                 "Estimated time: " + time + " hours.\n" +
-                "Direction: " + direction;
+                "Direction: " + direction + "\n" + radioFrequencies;
 
         JOptionPane.showMessageDialog(this, message);
 

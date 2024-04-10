@@ -40,6 +40,8 @@ public class FlightPath {
     public String endingAirport;
     // The airplane of a flight path, represented by type Airplane.
     public Airplane airplane;
+    // Static instance for singleton pattern
+    private static FlightPath instance;
 
     // Constructors for the FlightPath class
     // Overloaded constructor without middleAirports attribute (will be added later)
@@ -99,22 +101,30 @@ public class FlightPath {
     }
 
     // Vector list of flight paths
-    private static Vector<FlightPath> flightPaths = new Vector<>();
+    private Vector<FlightPath> flightPaths;
 
     // Public method to get the list of flight paths
-    public static Vector<FlightPath> getFlightPaths() {
-        return new Vector<>(flightPaths); // Return a copy of the flightPaths vector
+    public Vector<FlightPath> getFlightPaths() {
+        return flightPaths; // Return a copy of the flightPaths vector
     }
 
-    // Static instance for singleton pattern
-    public FlightPath() {
+    // Private constructor to prevent instantiation
+    private FlightPath() {
         flightPaths = new Vector<>();
         loadFlightPathsFromFile(FILE_LOCATION);
     }
 
+    // Static method to get instance
+    public static FlightPath getInstance() {
+        if (instance == null) {
+            instance = new FlightPath();
+        }
+        return instance;
+    }
+
     // Methods for the FlightPath class
     // Method to create a new flight path
-    public static void createFlightPath(FlightPath flightPath) {
+    public void createFlightPath(FlightPath flightPath) {
         if (flightPath.getKey() <= 0 || flightPath.getStartingAirport() == null ||
                 flightPath.getEndingAirport() == null || flightPath.getAirplane() == null) {
             System.out.println("Invalid flight path data provided.");
@@ -133,7 +143,7 @@ public class FlightPath {
     }
 
     // Method to modify a flight path
-    public static void modifyFlightPath(int key, FlightPath newFlightPathDetails) {
+    public void modifyFlightPath(int key, FlightPath newFlightPathDetails) {
         for (FlightPath flightPath : flightPaths) {
             if (flightPath.getKey() == key) {
                 // Found the flight path to modify
@@ -161,7 +171,7 @@ public class FlightPath {
     }
 
     // Method to delete a flight path
-    public static void deleteFlightPath(int key) {
+    public void deleteFlightPath(int key) {
         boolean found = false;
         for (int i = 0; i < flightPaths.size(); i++) {
             if (flightPaths.get(i).getKey() == key) {
@@ -179,14 +189,14 @@ public class FlightPath {
     }
 
     // Method to display flight paths
-    public static void displayFlightPaths() {
+    public void displayFlightPaths() {
         for (FlightPath flightPath : flightPaths) {
             System.out.println(flightPath);
         }
     }
 
     // Method to search for a flight path by key
-    public static FlightPath searchFlightPath(int key) {
+    public FlightPath searchFlightPath(int key) {
         for (FlightPath flightPath : flightPaths) {
             if (flightPath.getKey() == key) {
                 return flightPath;
@@ -198,19 +208,20 @@ public class FlightPath {
     public void launchFlight(FlightPath flightPath) {
         AirportManager airportManager = AirportManager.getInstance();
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
-    
+
         Airport startingAirport = airportManager.searchAirport(flightPath.getStartingAirport());
         Airport endingAirport = airportManager.searchAirport(flightPath.getEndingAirport());
         Airplane airplane = flightPath.getAirplane();
-    
+
         double flightRange = airplaneManager.calculateFlightRange(airplane);
-    
-        List<String> path = isPathAvailable(startingAirport, endingAirport, flightRange, airportManager, airplane.getFuelType());
-    
+
+        List<String> path = isPathAvailable(startingAirport, endingAirport, flightRange, airportManager,
+                airplane.getFuelType());
+
         if (!path.isEmpty() && path.size() >= 2) {
             double totalDistance = 0;
             Airport prevAirport = startingAirport;
-    
+
             // Calculate the total distance by summing the distances of each leg
             for (String airportCode : path) {
                 Airport nextAirport = airportManager.searchAirport(airportCode);
@@ -219,22 +230,23 @@ public class FlightPath {
                     prevAirport = nextAirport;
                 }
             }
-    
-            // Add middle airports from the path to the flightPath object, excluding start and end
+
+            // Add middle airports from the path to the flightPath object, excluding start
+            // and end
             flightPath.getMiddleAirports().clear();
             for (int i = 1; i < path.size() - 1; i++) {
                 flightPath.addMiddleAirport(path.get(i));
             }
-    
+
             // Calculate time
             double time = totalDistance / airplane.getAirspeed(); // Assuming constant speed
-    
-            System.out.println("Flight path found. Total distance: " + totalDistance + " km. Estimated time: " + time + " hours.");
+
+            System.out.println(
+                    "Flight path found. Total distance: " + totalDistance + " km. Estimated time: " + time + " hours.");
         } else {
             System.out.println("No viable flight path found. Cannot launch flight.");
         }
     }
-    
 
     // Method to check if a path is available with refueling stops
     private List<String> isPathAvailable(Airport start, Airport end, double range, AirportManager airportManager,
@@ -324,30 +336,39 @@ public class FlightPath {
     private void loadFlightPathsFromFile(String fileName) {
         AirportManager airportManager = AirportManager.getInstance();
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 try {
                     String[] attributes = line.split(",");
-                    List<String> middleAirportsICAOs = new Vector<>(Arrays.asList(attributes[2].split(";")));
+                    List<String> middleAirportsICAOs = new ArrayList<>(Arrays.asList(attributes[2].split(";")));
 
-                    // Initialize the list of middle airports
-                    List<String> middleAirports = new Vector<>();
+                    // Make sure the ICAO codes are valid
+                    List<String> validMiddleAirports = new ArrayList<>();
                     for (String icao : middleAirportsICAOs) {
-                        Airport airport = airportManager.searchAirport(icao);// Using searchAirport method
-                        if (airport != null) {
-                            middleAirports.add(airport.getName());
+                        if (airportManager.searchAirport(icao) != null) {
+                            validMiddleAirports.add(icao);
                         }
                     }
 
                     Airplane airplane = airplaneManager.searchAirplane(Integer.parseInt(attributes[4]));
+                    if (airplane == null) {
+                        continue; // Skip this flight path if the airplane is not found
+                    }
+
                     Airport startingAirport = airportManager.searchAirport(attributes[1]);
                     Airport endingAirport = airportManager.searchAirport(attributes[3]);
-
-                    if (startingAirport != null && endingAirport != null) {
-                        flightPaths.add(new FlightPath(Integer.parseInt(attributes[0]),
-                                startingAirport.getName(), endingAirport.getName(), airplane));
+                    if (startingAirport == null || endingAirport == null) {
+                        continue; // Skip this flight path if any airport is not found
                     }
+
+                    // Using ICAO codes for airports
+                    FlightPath flightPath = new FlightPath(Integer.parseInt(attributes[0]),
+                            startingAirport.getICAO(), endingAirport.getICAO(), airplane);
+                    flightPath.setMiddleAirports(validMiddleAirports);
+                    flightPaths.add(flightPath);
+
                 } catch (Exception e) {
                     System.err.println("Error processing line: " + line + "; Error: " + e.getMessage());
                 }
@@ -358,7 +379,7 @@ public class FlightPath {
     }
 
     // Save flight paths to file
-    private static void saveFlightPathsToFile(String fileName) {
+    private void saveFlightPathsToFile(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             for (FlightPath flightPath : flightPaths) {
                 String middleAirportsStr = String.join(";", flightPath.getMiddleAirports());
