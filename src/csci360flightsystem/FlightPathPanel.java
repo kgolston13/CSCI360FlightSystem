@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 public class FlightPathPanel extends JPanel {
 
@@ -108,7 +109,6 @@ public class FlightPathPanel extends JPanel {
 
         flightPathsTable = new JTable(flightPathTableModel);
         flightPathsTable.getTableHeader().setReorderingAllowed(false);
-        flightPathsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         loadFlightPathsData();
 
         flightPathsTable.getSelectionModel().addListSelectionListener(event -> {
@@ -165,9 +165,9 @@ public class FlightPathPanel extends JPanel {
     // Load flight paths data into the table model
     private void loadFlightPathsData() {
         flightPathTableModel.setRowCount(0); // Clear existing data in the table
-
+        Vector<FlightPath> flightPaths = FlightPath.getFlightPaths();
         // Iterate over each flight path and add it as a row to the table model
-        for (FlightPath flightPath : FlightPath.getFlightPaths()) {
+        for (FlightPath flightPath : flightPaths) {
             Object[] rowData = {
                     flightPath.getKey(),
                     flightPath.getStartingAirport(),
@@ -191,11 +191,19 @@ public class FlightPathPanel extends JPanel {
                 // Drawing the graph axes
                 int width = getWidth();
                 int height = getHeight();
+
+                // Draw Y-axis in the middle of the panel
                 int yAxisX = width / 2;
-                int xAxisY = height / 2;
                 g.drawLine(yAxisX, 0, yAxisX, height);
+
+                // Draw X-axis in the middle of the panel
+                int xAxisY = height / 2;
                 g.drawLine(0, xAxisY, width, xAxisY);
+
+                // Label for Y-axis (Latitude)
                 g.drawString("Latitude", yAxisX + 5, 15);
+
+                // Label for X-axis (Longitude)
                 g.drawString("Longitude", width - 70, xAxisY - 5);
 
                 // Draw the flight paths
@@ -378,35 +386,31 @@ public class FlightPathPanel extends JPanel {
         }
 
         selectedFlightPath.launchFlight(selectedFlightPath);
+        // Calculate total distance, time and get direction
+        AirportManager airportManager = AirportManager.getInstance();
+        Airport startingAirport = airportManager.searchAirport(selectedFlightPath.getStartingAirport());
+        Airport endingAirport = airportManager.searchAirport(selectedFlightPath.getEndingAirport());
 
-        if (selectedFlightPath.getMiddleAirports().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No viable connecting flight path found. Cannot launch flight.");
-        } else {
-            // Calculate total distance, time and get direction
-            AirportManager airportManager = AirportManager.getInstance();
-            Airport startingAirport = airportManager.searchAirport(selectedFlightPath.getStartingAirport());
-            Airport endingAirport = airportManager.searchAirport(selectedFlightPath.getEndingAirport());
-
-            double totalDistance = 0; // Total distance initialization
-            Airport prevAirport = startingAirport;
-            for (String airportCode : selectedFlightPath.getMiddleAirports()) {
-                Airport nextAirport = airportManager.searchAirport(airportCode);
-                if (nextAirport != null && prevAirport != null) {
-                    totalDistance += AirportManager.calculateDistance(prevAirport, nextAirport);
-                    prevAirport = nextAirport;
-                }
+        double totalDistance = 0; // Total distance initialization
+        Airport prevAirport = startingAirport;
+        for (String airportCode : selectedFlightPath.getMiddleAirports()) {
+            Airport nextAirport = airportManager.searchAirport(airportCode);
+            if (nextAirport != null && prevAirport != null) {
+                totalDistance += AirportManager.calculateDistance(prevAirport, nextAirport);
+                prevAirport = nextAirport;
             }
-            // Add the distance from the last middle airport to the ending airport
-            totalDistance += AirportManager.calculateDistance(prevAirport, endingAirport);
-
-            double time = totalDistance / selectedFlightPath.getAirplane().getAirspeed();
-            String direction = FlightPath.direction(FlightPath.calculateHeading(startingAirport, endingAirport));
-
-            String message = "Flight path found. \nTotal distance: " + totalDistance + " km.\n" +
-                    "Estimated time: " + time + " hours.\n" +
-                    "Direction: " + direction;
-
-            JOptionPane.showMessageDialog(this, message);
         }
+        // Add the distance from the last middle airport to the ending airport
+        totalDistance += AirportManager.calculateDistance(prevAirport, endingAirport);
+
+        double time = totalDistance / selectedFlightPath.getAirplane().getAirspeed();
+        String direction = FlightPath.direction(FlightPath.calculateHeading(startingAirport, endingAirport));
+
+        String message = "Flight path found. \nTotal distance: " + totalDistance + " km.\n" +
+                "Estimated time: " + time + " hours.\n" +
+                "Direction: " + direction;
+
+        JOptionPane.showMessageDialog(this, message);
+
     }
 }
