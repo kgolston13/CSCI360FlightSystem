@@ -10,8 +10,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +26,6 @@ public class FlightPathPanel extends JPanel {
     private JPanel cardPanel;
     private JPanel graphPanel;
     private CardLayout cardLayout;
-    private Map<Rectangle, FlightPath> flightPathMap = new HashMap<>();
 
     // Constructor
     public FlightPathPanel() {
@@ -234,22 +231,6 @@ public class FlightPathPanel extends JPanel {
                 }
             }
         };
-
-        // Add mouse listeners for interaction
-        graphPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                selectedFlightPath = null; // Reset selection on each click
-                for (Map.Entry<Rectangle, FlightPath> entry : flightPathMap.entrySet()) {
-                    if (entry.getKey().contains(e.getPoint())) {
-                        selectedFlightPath = entry.getValue();
-                        JOptionPane.showMessageDialog(graphPanel,
-                                "Selected Flight Path: " + selectedFlightPath.getKey());
-                        return; // Exit the loop as we found the selected flight path
-                    }
-                }
-            }
-        });
     }
 
     // Create the action panel with buttons to create, modify, delete and launch

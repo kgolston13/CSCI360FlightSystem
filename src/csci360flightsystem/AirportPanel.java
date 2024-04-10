@@ -10,9 +10,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -27,7 +24,6 @@ public class AirportPanel extends JPanel {
     private CardLayout cardLayout;
     private Airport selectedAirport;
     private JTextField searchField = new JTextField(20);
-    private Map<Rectangle, Airport> airportMap = new HashMap<>();
 
     // Constructor to initialize the Airport Panel
     public AirportPanel() {
@@ -206,45 +202,6 @@ public class AirportPanel extends JPanel {
                 }
             }
         };
-
-        graphPanel.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                boolean isCursorOverAirport = false;
-                for (Map.Entry<Rectangle, Airport> entry : airportMap.entrySet()) {
-                    if (entry.getKey().contains(e.getPoint())) {
-                        Airport hoveredAirport = entry.getValue();
-                        graphPanel.setToolTipText(getAirportDetails(hoveredAirport));
-                        isCursorOverAirport = true;
-                        break;
-                    }
-                }
-                if (!isCursorOverAirport) {
-                    graphPanel.setToolTipText(null);
-                }
-            }
-        });
-
-        graphPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                selectedAirport = null; // Reset selection on each click
-                for (Map.Entry<Rectangle, Airport> entry : airportMap.entrySet()) {
-                    if (entry.getKey().contains(e.getPoint())) {
-                        selectedAirport = entry.getValue();
-                        return; // Exit the loop as we found the selected airport
-                    }
-                }
-            }
-        });
-    }
-
-    private String getAirportDetails(Airport airport) {
-        // Customize this method to display the information you want in the tooltip
-        return String.format(
-                "<html>ICAO: %s<br>Name: %s<br>Radio Frequency: %s<br>Fuel Type: %s<br>Latitude: %f<br>Longitude: %f</html>",
-                airport.getICAO(), airport.getName(), airport.getRadioFrequency(), airport.getFuelType(),
-                airport.getLatitude(), airport.getLongitude());
     }
 
     // Method to create the action panel
