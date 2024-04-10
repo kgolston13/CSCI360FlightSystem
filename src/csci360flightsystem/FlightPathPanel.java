@@ -152,7 +152,7 @@ public class FlightPathPanel extends JPanel {
                         flightPath.getKey(),
                         flightPath.getStartingAirport(),
                         flightPath.getEndingAirport(),
-                        flightPath.getAirplane()
+                        flightPath.getAirplane().getKey()
                 };
                 flightPathTableModel.addRow(rowData);
             }
@@ -169,7 +169,7 @@ public class FlightPathPanel extends JPanel {
                     flightPath.getKey(),
                     flightPath.getStartingAirport(),
                     flightPath.getEndingAirport(),
-                    flightPath.getAirplane()
+                    flightPath.getAirplane().getKey()
             };
             flightPathTableModel.addRow(rowData);
         }

@@ -295,6 +295,33 @@ public class FlightPath {
             throw new IllegalStateException("Start or end airport not found.");
         }
 
+        // Handling the case where the starting point is the South Pole
+        if (startingAirport.getLatitude() == -90.0) {
+            // Since we're moving to San Francisco, we start by heading towards the
+            // north-east.
+            // But we can refine this based on the longitude of San Francisco.
+            double lon2 = endingAirport.getLongitude();
+            if (lon2 < 0) { // Western Hemisphere
+                return 45; // Northeast direction when viewed from the South Pole
+            } else {
+                return 315; // Northwest direction if it were in the Eastern Hemisphere
+            }
+        }
+
+        // Handling the case where the ending point is the North Pole
+        // Handling the case where the starting point is the North Pole
+        if (startingAirport.getLatitude() == 90.0) {
+            // Since we're moving to San Francisco, we start by heading towards the
+            // south-east.
+            // But we can refine this based on the longitude of San Francisco.
+            double lon2 = endingAirport.getLongitude();
+            if (lon2 < 0) { // Western Hemisphere
+                return 135; // Southeast direction when viewed from the North Pole
+            } else {
+                return 225; // South-west direction if it were in the Eastern Hemisphere
+            }
+        }
+
         double lat1 = Math.toRadians(startingAirport.getLatitude());
         double lon1 = Math.toRadians(startingAirport.getLongitude());
         double lat2 = Math.toRadians(endingAirport.getLatitude());
