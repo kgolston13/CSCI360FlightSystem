@@ -342,6 +342,9 @@ public class FlightPathPanel extends JPanel {
 
                 FlightPath updatedFlightPath = new FlightPath(selectedFlightPath.getKey(), startingAirport,
                         endingAirport, airplane);
+                // Since the starting or ending airports might have changed, clear the middle
+                // airports.
+                updatedFlightPath.setMiddleAirports(new ArrayList<>());
                 FlightPath.modifyFlightPath(selectedFlightPath.getKey(), updatedFlightPath);
                 loadFlightPathsData(); // Refresh the table to show the updated flight path
             } catch (NumberFormatException e) {
