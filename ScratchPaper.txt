@@ -75,3 +75,31 @@ CYUL -> CYYZ 507.2391234907016
 
         return neighbors;
     }
+
+Back up list of airplanes:
+850,2600,12600,JetA,0,Boeing,737-800,Commercial Jet
+905,2400,18380,JetA,1,Airbus,A320,Commercial Jet
+1225,850,2620,Aviation Gasoline,2,Cessna,Citation XLS,Business Jet
+750,2900,20820,JetA,3,McDonnell Douglas,MD-80,Commercial Jet
+470,100,456,Aviation Gasoline,4,Piper,PA-28 Cherokee,Light Aircraft
+590,1200,6442,JetA,5,Embraer,EMB 145,Regional Jet
+490,80,300,Aviation Gasoline,6,Beechcraft,Bonanza,Light Aircraft
+840,2600,10100,JetA,7,Bombardier,CRJ-700,Regional Jet
+917,2500,13400,JetA,8,Airbus,A330,Wide-body Jet
+965,3400,18390,JetA,9,Boeing,777,Wide-body Jet
+
+Back up list of airports:
+KATL,123.90,VHF,JetA,33.6362,-84.4294,Atlanta
+KAGS,270.30,VHF,JetA,33.3703,-81.9649,Augusta
+KMIA,123.00,VHF,JetA,25.7951,-80.2795,Miami
+KDFW,122.95,VHF,JetA,32.8990,-97.0336,Dallas
+KLAX,122.95,VHF,JetA,33.9422,-118.4036,Los Angeles
+KSEA,119.90,VHF,JetA,47.4484,-122.3086,Seattle
+KMSP,122.95,VHF,JetA,44.8851,-93.2144,Minneapolis
+KPWM,120.90,VHF,JetA,43.6465,-43.6465,Portland
+KIAD,135.70,VHF,JetA,38.9523,-77.4586,Washington
+CYYZ,122.07,VHF,JetA,43.6771,-79.6334,Toronto
+CYVR,133.10,VHF,JetA,49.1934,-123.1751,Vancouver
+CYXY,121.90,VHF,JetA,60.7141,-135.0761,Whitehorse
+CYFB,122.20,VHF,JetA,63.7570,-68.5450,Iqaluit
+CYYT,132.05,VHF,JetA,47.3707,-52.4509,St. John's

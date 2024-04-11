@@ -297,29 +297,15 @@ public class FlightPath {
 
         // Handling the case where the starting point is the South Pole
         if (startingAirport.getLatitude() == -90.0) {
-            // Since we're moving to San Francisco, we start by heading towards the
-            // north-east.
-            // But we can refine this based on the longitude of San Francisco.
             double lon2 = endingAirport.getLongitude();
-            if (lon2 < 0) { // Western Hemisphere
-                return 45; // Northeast direction when viewed from the South Pole
-            } else {
-                return 315; // Northwest direction if it were in the Eastern Hemisphere
-            }
+            return (lon2 + 360) % 360; // Normalize the longitude to [0, 360) for heading
         }
 
-        // Handling the case where the ending point is the North Pole
         // Handling the case where the starting point is the North Pole
         if (startingAirport.getLatitude() == 90.0) {
-            // Since we're moving to San Francisco, we start by heading towards the
-            // south-east.
-            // But we can refine this based on the longitude of San Francisco.
             double lon2 = endingAirport.getLongitude();
-            if (lon2 < 0) { // Western Hemisphere
-                return 135; // Southeast direction when viewed from the North Pole
-            } else {
-                return 225; // South-west direction if it were in the Eastern Hemisphere
-            }
+            // Adjust the heading to be opposite the meridian's direction
+            return (180 + lon2 + 360) % 360; // Normalize to [0, 360)
         }
 
         double lat1 = Math.toRadians(startingAirport.getLatitude());
