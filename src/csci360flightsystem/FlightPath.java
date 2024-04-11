@@ -205,70 +205,96 @@ public class FlightPath {
         return null; // Return null if flight path with specified key is not found
     }
 
-    public void launchFlight(FlightPath flightPath) {
+    public void launchFlight() {
         AirportManager airportManager = AirportManager.getInstance();
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
 
-        Airport startingAirport = airportManager.searchAirport(flightPath.getStartingAirport());
-        Airport endingAirport = airportManager.searchAirport(flightPath.getEndingAirport());
-        Airplane airplane = flightPath.getAirplane();
+        // Search for the starting and ending airports
+        Airport startingAirport = airportManager.searchAirport(this.getStartingAirport());
+        Airport endingAirport = airportManager.searchAirport(this.getEndingAirport());
+        // Search for the airplane
+        Airplane airplane = this.getAirplane();
 
+        // Calculate the flight range of the airplane
         double flightRange = airplaneManager.calculateFlightRange(airplane);
 
+        // Check if the path is available with refueling stops
         List<String> path = isPathAvailable(startingAirport, endingAirport, flightRange, airportManager,
                 airplane.getFuelType());
 
-        if (!path.isEmpty() && path.size() >= 2) {
-            double totalDistance = 0;
-            Airport prevAirport = startingAirport;
+        // Check if a direct path is available
+        if (!path.isEmpty()) {
+            // Direct flight check
+            if (path.size() == 2) {
+                // Handle direct flight
+                System.out.println("Using direct flight path.");
+                // You could calculate and log the direct flight details here
+            } else {
+                // Handle non-direct flight with layovers
+                double totalDistance = 0;
+                Airport prevAirport = startingAirport;
 
-            // Calculate the total distance by summing the distances of each leg
-            for (String airportCode : path) {
-                Airport nextAirport = airportManager.searchAirport(airportCode);
-                if (nextAirport != null && prevAirport != null) {
-                    totalDistance += AirportManager.calculateDistance(prevAirport, nextAirport);
-                    prevAirport = nextAirport;
+                // Calculate the total distance by summing the distances of each leg
+                for (String airportCode : path) {
+                    Airport nextAirport = airportManager.searchAirport(airportCode);
+                    if (nextAirport != null && prevAirport != null) {
+                        totalDistance += AirportManager.calculateDistance(prevAirport, nextAirport);
+                        prevAirport = nextAirport;
+                    }
                 }
+
+                // Clear the middle airports and add the new ones
+                this.getMiddleAirports().clear();
+                for (int i = 1; i < path.size() - 1; i++) {
+                    this.addMiddleAirport(path.get(i));
+                    System.out.println("Adding middle airport: " + path.get(i)); // Log adding middle airport
+                }
+
+                // Calculate time
+                double time = totalDistance / airplane.getAirspeed(); // Assuming constant speed
+                System.out.println("Flight path found. Total distance: " + totalDistance + " km. Estimated time: "
+                        + time + " hours.");
             }
-
-            // Add middle airports from the path to the flightPath object, excluding start
-            // and end
-            flightPath.getMiddleAirports().clear();
-            for (int i = 1; i < path.size() - 1; i++) {
-                flightPath.addMiddleAirport(path.get(i));
-            }
-
-            // Calculate time
-            double time = totalDistance / airplane.getAirspeed(); // Assuming constant speed
-
-            System.out.println(
-                    "Flight path found. Total distance: " + totalDistance + " km. Estimated time: " + time + " hours.");
         } else {
             System.out.println("No viable flight path found. Cannot launch flight.");
+            this.middleAirports.clear(); // Clear middle airports if no path is found
         }
     }
 
     // Method to check if a path is available with refueling stops
     private List<String> isPathAvailable(Airport start, Airport end, double range, AirportManager airportManager,
             String requiredFuelType) {
+        double directDistance = AirportManager.calculateDistance(start, end);
+        if (directDistance <= range) {
+            System.out.println("Direct flight is possible.");
+            return Arrays.asList(start.getICAO(), end.getICAO());
+        }
+        // Using DFS to find a path
         Set<String> visited = new HashSet<>();
         Stack<AirportManager.AirportNode> stack = new Stack<>();
         Map<Airport, Airport> prev = new HashMap<>(); // To track the path
+        // Start the search from the starting airport
         stack.push(airportManager.new AirportNode(start));
 
+        // DFS search
         while (!stack.isEmpty()) {
             AirportManager.AirportNode node = stack.pop();
             Airport currentAirport = node.getAirport();
+            // Skip if the airport is null or already visited
             if (currentAirport == null || visited.contains(currentAirport.getICAO()))
                 continue;
+            System.out.println("Visiting airport: " + currentAirport.getICAO()); // Log visiting airport
             visited.add(currentAirport.getICAO());
-
+            // Check if the current airport is the destination
             if (currentAirport.getICAO().equals(end.getICAO())) {
                 // Build and return the path using the prev map
                 List<String> path = new ArrayList<>();
+                // Traverse the prev map to build the path
                 for (Airport at = end; at != null; at = prev.get(at)) {
                     path.add(0, at.getICAO()); // Add to the beginning of the list
                 }
+                // Return the path if found
+                System.out.println("Path found: " + path); // Log path found
                 return path;
             }
 
@@ -278,10 +304,18 @@ public class FlightPath {
                 Airport nextAirport = adjacentNode.getAirport();
                 double distanceToNextAirport = edge.getValue();
 
-                if (!visited.contains(nextAirport.getICAO()) && distanceToNextAirport <= range
-                        && nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
-                    stack.push(adjacentNode);
-                    prev.put(nextAirport, currentAirport); // Track the path
+                // Check if the airport is unvisited, within range, and has the required fuel
+                // type
+                if (!visited.contains(nextAirport.getICAO()) && distanceToNextAirport <= range) {
+                    if (nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
+                        System.out.println("Adding airport to stack: " + nextAirport.getICAO());
+                        stack.push(adjacentNode);
+                        prev.put(nextAirport, currentAirport); // Track the path
+                    } else {
+                        System.out.println("Skipping airport due to fuel mismatch: " + nextAirport.getICAO());
+                    }
+                } else {
+                    System.out.println("Skipping airport due to range limitation or revisit: " + nextAirport.getICAO());
                 }
             }
         }

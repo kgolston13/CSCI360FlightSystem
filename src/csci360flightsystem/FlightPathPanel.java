@@ -368,18 +368,25 @@ public class FlightPathPanel extends JPanel {
         }
     }
 
+    // Launch the selected flight path
     private void launchFlightPath() {
+        // Ensure a flight path is selected
         if (selectedFlightPath == null) {
             JOptionPane.showMessageDialog(this, "Please select a flight path to launch.");
             return;
         }
 
-        selectedFlightPath.launchFlight(selectedFlightPath);
-        // Calculate total distance, time and get direction
+        // Fetch the starting, middle, and ending airports
         AirportManager airportManager = AirportManager.getInstance();
+        selectedFlightPath.launchFlight(); // Directly modify selectedFlightPath
+
+        // Fetch updated details from selectedFlightPath
         Airport startingAirport = airportManager.searchAirport(selectedFlightPath.getStartingAirport());
         List<String> middleAirportsCodes = selectedFlightPath.getMiddleAirports();
         Airport endingAirport = airportManager.searchAirport(selectedFlightPath.getEndingAirport());
+
+        // Log the middle airports after launching the flight
+        System.out.println("Middle airports post launch: " + selectedFlightPath.getMiddleAirports());
 
         StringBuilder radioFrequencies = new StringBuilder();
         radioFrequencies.append("Starting airport radio frequency: ").append(startingAirport.getRadioFrequency())
@@ -392,16 +399,15 @@ public class FlightPathPanel extends JPanel {
         radioFrequencies.append("Ending airport radio frequency: ").append(endingAirport.getRadioFrequency())
                 .append("\n");
 
-        double totalDistance = 0; // Total distance initialization
+        double totalDistance = 0;
         Airport prevAirport = startingAirport;
-        for (String airportCode : selectedFlightPath.getMiddleAirports()) {
+        for (String airportCode : middleAirportsCodes) {
             Airport nextAirport = airportManager.searchAirport(airportCode);
             if (nextAirport != null && prevAirport != null) {
                 totalDistance += AirportManager.calculateDistance(prevAirport, nextAirport);
                 prevAirport = nextAirport;
             }
         }
-        // Add the distance from the last middle airport to the ending airport
         totalDistance += AirportManager.calculateDistance(prevAirport, endingAirport);
 
         double time = totalDistance / selectedFlightPath.getAirplane().getAirspeed();
@@ -412,6 +418,5 @@ public class FlightPathPanel extends JPanel {
                 "Direction: " + direction + "\n" + radioFrequencies;
 
         JOptionPane.showMessageDialog(this, message);
-
     }
 }
