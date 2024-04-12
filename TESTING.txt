@@ -151,14 +151,35 @@ System.out.println("The flight range of the Boeing 737 is: " + flightRange + " k
         // and launching a flight,
         // and displaying all flight paths.
 
-        // Add three airports for testing
-        AirportManager manager = AirportManager.getInstance();
-        Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
-        Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
-        Airport sanFrancisco = new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco");
-        manager.createAirport(atlanta);
-        manager.createAirport(toronto);
-        manager.createAirport(sanFrancisco);
+        // Add airports for testing
+        // Additional airports for testing
+        AirportManager airportManager = AirportManager.getInstance();
+        Airport augusta = new Airport("KAGS", 270.30, "VHF", "JetA", 33.3703, -81.9649, "Augusta");
+        Airport miami = new Airport("KMIA", 123.00, "VHF", "JetA", 25.7951, -80.2795, "Miami");
+        Airport dallas = new Airport("KDFW", 122.95, "VHF", "JetA", 32.8990, -97.0336, "Dallas");
+        Airport losAngeles = new Airport("KLAX", 122.95, "VHF", "JetA", 33.9422, -118.4036, "Los Angeles");
+        Airport seattle = new Airport("KSEA", 119.90, "VHF", "JetA", 47.4484, -122.3086, "Seattle");
+        Airport minneapolis = new Airport("KMSP", 122.95, "VHF", "JetA", 44.8851, -93.2144, "Minneapolis");
+        Airport portland = new Airport("KPWM", 120.90, "VHF", "JetA", 43.6465, -43.6465, "Portland");
+        Airport washington = new Airport("KIAD", 135.70, "VHF", "JetA", 38.9523, -77.4586, "Washington");
+        Airport vancouver = new Airport("CYVR", 133.10, "VHF", "JetA", 49.1934, -123.1751, "Vancouver");
+        Airport whitehorse = new Airport("CYXY", 121.90, "VHF", "JetA", 60.7141, -135.0761, "Whitehorse");
+        Airport iqaluit = new Airport("CYFB", 122.20, "VHF", "JetA", 63.7570, -68.5450, "Iqaluit");
+        Airport stJohns = new Airport("CYYT", 132.05, "VHF", "JetA", 47.3707, -52.4509, "St. John's");
+
+        // Create additional airports
+        airportManager.createAirport(augusta);
+        airportManager.createAirport(miami);
+        airportManager.createAirport(dallas);
+        airportManager.createAirport(losAngeles);
+        airportManager.createAirport(seattle);
+        airportManager.createAirport(minneapolis);
+        airportManager.createAirport(portland);
+        airportManager.createAirport(washington);
+        airportManager.createAirport(vancouver);
+        airportManager.createAirport(whitehorse);
+        airportManager.createAirport(iqaluit);
+        airportManager.createAirport(stJohns);
 
         // Add an airplane for testing
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
@@ -167,20 +188,22 @@ System.out.println("The flight range of the Boeing 737 is: " + flightRange + " k
 
         // Test 1: Creating a flight path and display it
         System.out.println("Test 1: Creating a flight path");
-        FlightPath flightPath1 = new FlightPath(1, "Atlanta", "Toronto", boeing737);
+        FlightPath flightPath1 = new FlightPath(1, "KAGS", Arrays.asList(), "KMIA", boeing737);
         createFlightPath(flightPath1);
+
         displayFlightPaths();
 
         // Test 2: Modifying an existing fligh path and display it
         System.out.println("Test 2: Modifying an existing flight path");
-        FlightPath newFlightPathDetails = new FlightPath(1, "San Francisco", "Toronto", boeing737);
+        FlightPath newFlightPathDetails = new FlightPath(1, "KAGS", Arrays.asList(), "KLAX", boeing737);
         modifyFlightPath(1, newFlightPathDetails);
+
         displayFlightPaths();
 
         // Test 3: Calculate the heading and direction of a flight
         System.out.println("Test 3: Calculate the heading and direction of a flight");
-        System.out.println("Heading: " + calculateHeading(atlanta, toronto) + " degrees" + " ("
-                + direction(calculateHeading(atlanta, toronto)) + ")");
+        System.out.println("Heading: " + calculateHeading(augusta, losAngeles) + " degrees" + " ("
+                + direction(calculateHeading(augusta, losAngeles)) + ")");
 
         // Test 4: Launching a flight
         System.out.println("Test 4: Launching a flight");

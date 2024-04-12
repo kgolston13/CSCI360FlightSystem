@@ -22,7 +22,7 @@ import java.util.Vector;
 public class FlightPath {
 
     // Variables for file location
-    private static final String FILE_LOCATION = "src\\csci360flightsystem\\Airports.txt";
+    private static final String FILE_LOCATION = "src/csci360flightsystem/FlightLog.txt";
 
     // Attributes of the FlightPath class
     // key, starting airport, middle airport(s), ending airport, airplane
@@ -97,7 +97,7 @@ public class FlightPath {
     }
 
     // Vector list of flight paths
-    private static Vector<FlightPath> flightPaths;
+    private static Vector<FlightPath> flightPaths = new Vector<>();
 
     // Constructor for the FlightPath class
     public FlightPath() {
@@ -106,6 +106,18 @@ public class FlightPath {
     }
 
     // Methods for the FlightPath class
+    // Override the toString method
+    @Override
+    public String toString() {
+        return "FlightPath{" +
+                "key=" + key +
+                ", startingAirport='" + startingAirport + '\'' +
+                ", middleAirports=" + middleAirports +
+                ", endingAirport='" + endingAirport + '\'' +
+                ", airplane=" + (airplane != null ? airplane.toString() : "null") +
+                '}';
+    }
+
     // Method to create a new flight path
     public static void createFlightPath(FlightPath flightPath) {
         if (flightPath.getKey() <= 0 || flightPath.getStartingAirport() == null ||
@@ -148,10 +160,23 @@ public class FlightPath {
         System.out.println("Flight path with key " + key + " not found.");
     }
 
-    // Method to delete a flight path
-    public static void deleteFlightPath(int index) {
-        flightPaths.remove(index);
-        saveFlightPathsToFile(FILE_LOCATION);
+    // Method to delete a flight path based on its key
+    public static void deleteFlightPath(int key) {
+        FlightPath flightPathToRemove = null;
+        for (FlightPath flightPath : flightPaths) {
+            if (flightPath.getKey() == key) {
+                flightPathToRemove = flightPath;
+                break;
+            }
+        }
+
+        if (flightPathToRemove != null) {
+            flightPaths.remove(flightPathToRemove);
+            saveFlightPathsToFile(FILE_LOCATION);
+            System.out.println("Flight path with key " + key + " has been deleted.");
+        } else {
+            System.out.println("No flight path found with key " + key);
+        }
     }
 
     // Method to display flight paths
@@ -176,23 +201,38 @@ public class FlightPath {
         AirportManager airportManager = AirportManager.getInstance();
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
 
+        if (flightPath == null) {
+            System.out.println("Invalid flight path.");
+            return;
+        }
+
         Airport startingAirport = airportManager.searchAirport(flightPath.getStartingAirport());
         Airport endingAirport = airportManager.searchAirport(flightPath.getEndingAirport());
         Airplane airplane = flightPath.getAirplane();
 
+        if (startingAirport == null) {
+            System.out.println("Starting airport not found.");
+            return;
+        }
+        if (endingAirport == null) {
+            System.out.println("Ending airport not found.");
+            return;
+        }
+        if (airplane == null) {
+            System.out.println("Airplane details not found.");
+            return;
+        }
+
         double flightRange = airplaneManager.calculateFlightRange(airplane);
 
-        // Check direct flight is possible based on the flight range and fuel type
-        if (AirportManager.calculateDistance(startingAirport, endingAirport) <= flightRange &&
-                startingAirport.getFuelType().equalsIgnoreCase(airplane.getFuelType())) {
-
+        // Check if direct flight is possible based on the flight range and fuel type
+        double distance = AirportManager.calculateDistance(startingAirport, endingAirport);
+        if (distance <= flightRange && startingAirport.getFuelType().equalsIgnoreCase(airplane.getFuelType())) {
             System.out.println("Direct flight is possible. Launching flight...");
-            // Logic to launch the direct flight
         } else {
-            // Depth-first search to find a connecting path with refueling stops
+            // Use depth-first search to find a connecting path with refueling stops
             if (isPathAvailable(startingAirport, endingAirport, flightRange, airportManager, airplane.getFuelType())) {
                 System.out.println("Connecting flight path found. Launching flight...");
-                // Logic to launch the flight with layovers
             } else {
                 System.out.println("No viable connecting flight path found. Cannot launch flight.");
             }
@@ -206,30 +246,46 @@ public class FlightPath {
         Stack<AirportManager.AirportNode> stack = new Stack<>();
         stack.push(airportManager.new AirportNode(start));
 
+        System.out.println("Starting search from: " + start.getICAO());
+        System.out.println("Searching path to: " + end.getICAO());
+
         while (!stack.isEmpty()) {
-            AirportManager.AirportNode node = stack.pop();
+            AirportManager.AirportNode node = stack.peek(); // Use peek to look at the top without removing
             Airport currentAirport = node.getAirport();
-            visited.add(currentAirport.getICAO());
 
-            if (currentAirport.getICAO().equals(end.getICAO())) {
-                return true; // Found a path
-            }
+            if (!visited.contains(currentAirport.getICAO())) {
+                visited.add(currentAirport.getICAO()); // Mark as visited only when processing for the first time
+                System.out.println("Visiting: " + currentAirport.getICAO());
 
-            // Push all unvisited and reachable airports onto the stack
-            for (Map.Entry<AirportManager.AirportNode, Double> edge : node.edges.entrySet()) {
-                AirportManager.AirportNode adjacentNode = edge.getKey();
-                Airport nextAirport = adjacentNode.getAirport();
-                double distanceToNextAirport = edge.getValue();
-
-                // Check if the next airport has the required fuel type and is within range
-                if (!visited.contains(nextAirport.getICAO()) &&
-                        distanceToNextAirport <= range &&
-                        nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
-
-                    stack.push(adjacentNode);
+                if (currentAirport.getICAO().equals(end.getICAO())) {
+                    System.out.println("Destination reached: " + currentAirport.getICAO());
+                    return true; // Found a path
                 }
+
+                // Push all unvisited and reachable airports onto the stack
+                for (Map.Entry<AirportManager.AirportNode, Double> edge : node.edges.entrySet()) {
+                    AirportManager.AirportNode adjacentNode = edge.getKey();
+                    Airport nextAirport = adjacentNode.getAirport();
+                    double distanceToNextAirport = edge.getValue();
+
+                    // Check if the next airport has the required fuel type and is within range
+                    if (!visited.contains(nextAirport.getICAO()) &&
+                            distanceToNextAirport <= range &&
+                            nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
+
+                        System.out.println("Adding neighbor to stack: " + nextAirport.getICAO());
+                        stack.push(adjacentNode);
+                    } else {
+                        System.out.println(
+                                "Neighbor not added (either visited or out of range): " + nextAirport.getICAO());
+                    }
+                }
+            } else {
+                System.out.println("Already visited or processed: " + currentAirport.getICAO());
+                stack.pop(); // Remove the node only if all its neighbors have been processed
             }
         }
+        System.out.println("No path found.");
         return false; // No path found
     }
 
@@ -332,54 +388,6 @@ public class FlightPath {
 
     // Main method for the FlightPath class
     public static void main(String[] args) {
-        // Testing creation of flightpaths, modifying existing flightpaths, deleting
-        // existing flightpaths,
-        // display a specific flightpath by key, calculating the heading and direction,
-        // and launching a flight,
-        // and displaying all flight paths.
 
-        // Add three airports for testing
-        AirportManager manager = AirportManager.getInstance();
-        Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
-        Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
-        Airport sanFrancisco = new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco");
-        manager.createAirport(atlanta);
-        manager.createAirport(toronto);
-        manager.createAirport(sanFrancisco);
-
-        // Add an airplane for testing
-        AirplaneManager airplaneManager = AirplaneManager.getInstance();
-        Airplane boeing737 = new Airplane(850, 2600, 12600, "Jet A-1", 0, "Boeing", "737-800", "Commercial Jet");
-        airplaneManager.createAirplane(boeing737);
-
-        // Test 1: Creating a flight path and display it
-        System.out.println("Test 1: Creating a flight path");
-        FlightPath flightPath1 = new FlightPath(1, "Atlanta", Arrays.asList(), "Toronto", boeing737);
-        createFlightPath(flightPath1);
-        displayFlightPaths();
-
-        // Test 2: Modifying an existing fligh path and display it
-        System.out.println("Test 2: Modifying an existing flight path");
-        FlightPath newFlightPathDetails = new FlightPath(1, "San Francisco", Arrays.asList(), "Toronto", boeing737);
-        modifyFlightPath(1, newFlightPathDetails);
-        displayFlightPaths();
-
-        // Test 3: Calculate the heading and direction of a flight
-        System.out.println("Test 3: Calculate the heading and direction of a flight");
-        System.out.println("Heading: " + calculateHeading(atlanta, toronto) + " degrees" + " ("
-                + direction(calculateHeading(atlanta, toronto)) + ")");
-
-        // Test 4: Launching a flight
-        System.out.println("Test 4: Launching a flight");
-        if (flightPath1.getStartingAirport() != null && flightPath1.getEndingAirport() != null) {
-            flightPath1.launchFlight(flightPath1);
-        } else {
-            System.out.println("Flight cannot be launched due to invalid airports.");
-        }
-
-        // Test 5: Deleting a flight path and attempting to display it
-        System.out.println("Test 5: Deleting a flight path");
-        deleteFlightPath(1);
-        displayFlightPaths();
     }
 }

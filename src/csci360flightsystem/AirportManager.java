@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Vector;
 
@@ -40,6 +41,22 @@ public class AirportManager {
         public void addEdge(AirportNode node, double distance) {
             edges.put(node, distance);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            AirportNode that = (AirportNode) o;
+            return Objects.equals(airport.getICAO(), that.airport.getICAO());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(airport.getICAO());
+        }
+
     }
 
     // Vector list of airports
@@ -223,6 +240,11 @@ public class AirportManager {
             while ((line = reader.readLine()) != null) {
                 // Split the line by comma to extract attributes
                 String[] attributes = line.split(",");
+                // Check if the line has the correct number of attributes
+                if (attributes.length != 7) {
+                    System.err.println("Skipping invalid line: " + line);
+                    continue;
+                }
                 // Create a new Airport object from attributes
                 Airport airport = new Airport(attributes[0],
                         Double.parseDouble(attributes[1]),
