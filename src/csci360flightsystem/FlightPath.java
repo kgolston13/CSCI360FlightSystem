@@ -205,6 +205,7 @@ public class FlightPath {
         return null; // Return null if flight path with specified key is not found
     }
 
+    // Method to search for a flight path
     public void launchFlight() {
         AirportManager airportManager = AirportManager.getInstance();
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
@@ -278,12 +279,15 @@ public class FlightPath {
 
         // DFS search
         while (!stack.isEmpty()) {
+            // Pop the top airport from the stack
             AirportManager.AirportNode node = stack.pop();
+            // Get the current airport
             Airport currentAirport = node.getAirport();
             // Skip if the airport is null or already visited
             if (currentAirport == null || visited.contains(currentAirport.getICAO()))
                 continue;
             System.out.println("Visiting airport: " + currentAirport.getICAO()); // Log visiting airport
+            // Mark the airport as visited
             visited.add(currentAirport.getICAO());
             // Check if the current airport is the destination
             if (currentAirport.getICAO().equals(end.getICAO())) {
@@ -295,6 +299,7 @@ public class FlightPath {
                 }
                 // Return the path if found
                 System.out.println("Path found: " + path); // Log path found
+                // Return the path if found
                 return path;
             }
 
@@ -304,20 +309,26 @@ public class FlightPath {
                 Airport nextAirport = adjacentNode.getAirport();
                 double distanceToNextAirport = edge.getValue();
 
-                // Check if the airport is unvisited, within range, and has the required fuel
-                // type
-                if (!visited.contains(nextAirport.getICAO()) && distanceToNextAirport <= range) {
-                    if (nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
-                        System.out.println("Adding airport to stack: " + nextAirport.getICAO());
-                        stack.push(adjacentNode);
-                        prev.put(nextAirport, currentAirport); // Track the path
+                // Check if the airport is unvisited
+                if (!visited.contains(nextAirport.getICAO())) {
+                    // Check if the airport is within range
+                    if (distanceToNextAirport <= range) {
+                        // Check if the airport has the required fuel type
+                        if (nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
+                            System.out.println("Adding airport to stack: " + nextAirport.getICAO());
+                            stack.push(adjacentNode);
+                            prev.put(nextAirport, currentAirport); // Track the path
+                        } else {
+                            System.out.println("Skipping airport " + nextAirport.getICAO() + " due to fuel mismatch.");
+                        }
                     } else {
-                        System.out.println("Skipping airport due to fuel mismatch: " + nextAirport.getICAO());
+                        System.out.println("Skipping airport " + nextAirport.getICAO() + " due to range limitation.");
                     }
                 } else {
-                    System.out.println("Skipping airport due to range limitation or revisit: " + nextAirport.getICAO());
+                    System.out.println("Skipping airport " + nextAirport.getICAO() + " as it has been visited.");
                 }
             }
+
         }
         return new ArrayList<>(); // Return an empty list if no path found
     }

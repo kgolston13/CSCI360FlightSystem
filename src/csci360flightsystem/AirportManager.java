@@ -18,7 +18,6 @@ public class AirportManager {
     // variable for file location
     private static final String FILE_LOCATION = "src/csci360flightsystem/Airports.txt";
 
-    // CSCI360FlightSystem/src/csci360flightsystem/Airplanes.txt
     // Nested class for the AirportNode
     public class AirportNode {
         private Airport airport;
