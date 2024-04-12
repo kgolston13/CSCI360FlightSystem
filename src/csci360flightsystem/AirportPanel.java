@@ -17,6 +17,7 @@ import java.util.Vector;
 public class AirportPanel extends JPanel {
 
     // Instance variables
+	private static final long serialVersionUID = 1L;
     private DefaultTableModel airportTableModel;
     private JTable airportsTable;
     private JPanel cardPanel;
@@ -85,7 +86,9 @@ public class AirportPanel extends JPanel {
     private void initializeTable() {
         String[] columnNames = { "ICAO", "Radio Frequency", "Fuel Type", "Latitude", "Longitude", "Name" };
         airportTableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
+            private static final long serialVersionUID = 1L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Make table cells non-editable
             }
@@ -166,7 +169,8 @@ public class AirportPanel extends JPanel {
     // Method to initialize the graph panel
     private void initializeGraph() {
         graphPanel = new JPanel() {
-            Map<Rectangle, Airport> airportMap = new HashMap<>();
+            private static final long serialVersionUID = 1L;
+			Map<Rectangle, Airport> airportMap = new HashMap<>();
 
             @Override
             protected void paintComponent(Graphics g) {

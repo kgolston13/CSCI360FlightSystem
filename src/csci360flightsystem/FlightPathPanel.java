@@ -17,8 +17,9 @@ import java.util.Map;
 import java.util.Vector;
 
 public class FlightPathPanel extends JPanel {
-
-    // Instance variables
+	
+	// Instance variables
+    private static final long serialVersionUID = 1L;
     private DefaultTableModel flightPathTableModel;
     private JTable flightPathsTable;
     private FlightPath selectedFlightPath;
@@ -66,7 +67,8 @@ public class FlightPathPanel extends JPanel {
         tablePanel.add(createSearchPanel(), BorderLayout.NORTH);
 
         graphPanel = new JPanel() {
-            @Override
+            private static final long serialVersionUID = 1L;
+			@Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // Draw flight paths on the graph
@@ -98,7 +100,9 @@ public class FlightPathPanel extends JPanel {
     private void initializeTable() {
         String[] columnNames = { "Key", "Starting Airport", "Ending Airport", "Airplane" };
         flightPathTableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
+            private static final long serialVersionUID = 1L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -178,7 +182,8 @@ public class FlightPathPanel extends JPanel {
     // Method to create the graph panel
     private void initializeGraph() {
         graphPanel = new JPanel() {
-            Map<Rectangle, FlightPath> flightPathMap = new HashMap<>();
+            private static final long serialVersionUID = 1L;
+			Map<Rectangle, FlightPath> flightPathMap = new HashMap<>();
 
             @Override
             protected void paintComponent(Graphics g) {

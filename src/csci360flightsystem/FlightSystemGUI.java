@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FlightSystemGUI extends JFrame {
+	
+	// Instance variables
+	private static final long serialVersionUID = 1L;
     // Panels for different parts of the system
     private AirportPanel airportPanel = new AirportPanel();
     private AirplanePanel airplanePanel = new AirplanePanel();

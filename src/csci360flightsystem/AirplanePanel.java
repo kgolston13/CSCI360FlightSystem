@@ -14,7 +14,8 @@ import java.util.Vector;
 
 public class AirplanePanel extends JPanel {
 
-    // Instance variables
+    private static final long serialVersionUID = 1L;
+	// Instance variables
     private DefaultTableModel airplaneTableModel;
     private JTable airplanesTable;
     private Airplane selectedAirplane;
@@ -47,7 +48,9 @@ public class AirplanePanel extends JPanel {
         String[] columnNames = { "Airspeed", "Fuel Burn", "Fuel Capacity", "Fuel Type", "Key", "Make", "Model",
                 "Type" };
         airplaneTableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
+            private static final long serialVersionUID = 1L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Make table cells non-editable
             }
