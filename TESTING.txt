@@ -152,7 +152,7 @@ System.out.println("The flight range of the Boeing 737 is: " + flightRange + " k
         // and displaying all flight paths.
 
         // Add airports for testing
-        // Additional airports for testing
+        // Airports for testing
         AirportManager airportManager = AirportManager.getInstance();
         Airport augusta = new Airport("KAGS", 270.30, "VHF", "JetA", 33.3703, -81.9649, "Augusta");
         Airport miami = new Airport("KMIA", 123.00, "VHF", "JetA", 25.7951, -80.2795, "Miami");
@@ -167,7 +167,7 @@ System.out.println("The flight range of the Boeing 737 is: " + flightRange + " k
         Airport iqaluit = new Airport("CYFB", 122.20, "VHF", "JetA", 63.7570, -68.5450, "Iqaluit");
         Airport stJohns = new Airport("CYYT", 132.05, "VHF", "JetA", 47.3707, -52.4509, "St. John's");
 
-        // Create additional airports
+        // Create airports
         airportManager.createAirport(augusta);
         airportManager.createAirport(miami);
         airportManager.createAirport(dallas);
@@ -181,9 +181,12 @@ System.out.println("The flight range of the Boeing 737 is: " + flightRange + " k
         airportManager.createAirport(iqaluit);
         airportManager.createAirport(stJohns);
 
+        // Call the displayNodesAndEdges method to test if edges and nodes are set up
+        airportManager.displayNodesAndEdges();
+
         // Add an airplane for testing
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
-        Airplane boeing737 = new Airplane(850, 2600, 12600, "Jet A-1", 0, "Boeing", "737-800", "Commercial Jet");
+        Airplane boeing737 = new Airplane(850, 3200, 12600, "Jet A-1", 0, "Boeing", "737-800", "Commercial Jet");
         airplaneManager.createAirplane(boeing737);
 
         // Test 1: Creating a flight path and display it
@@ -195,23 +198,28 @@ System.out.println("The flight range of the Boeing 737 is: " + flightRange + " k
 
         // Test 2: Modifying an existing fligh path and display it
         System.out.println("Test 2: Modifying an existing flight path");
-        FlightPath newFlightPathDetails = new FlightPath(1, "KAGS", Arrays.asList(), "KLAX", boeing737);
+        FlightPath newFlightPathDetails = new FlightPath(1, "KMIA", Arrays.asList(), "CYFB", boeing737);
         modifyFlightPath(1, newFlightPathDetails);
 
         displayFlightPaths();
 
         // Test 3: Calculate the heading and direction of a flight
         System.out.println("Test 3: Calculate the heading and direction of a flight");
-        System.out.println("Heading: " + calculateHeading(augusta, losAngeles) + " degrees" + " ("
-                + direction(calculateHeading(augusta, losAngeles)) + ")");
+        System.out.println("Heading: " + calculateHeading(miami, iqaluit) + " degrees" + " ("
+                + direction(calculateHeading(miami, iqaluit)) + ")");
 
         // Test 4: Launching a flight
         System.out.println("Test 4: Launching a flight");
         if (flightPath1.getStartingAirport() != null && flightPath1.getEndingAirport() != null) {
-            flightPath1.launchFlight(flightPath1);
+            flightPath1.launchFlight(flightPath1.getStartingAirport(), flightPath1.getEndingAirport(), boeing737);
         } else {
             System.out.println("Flight cannot be launched due to invalid airports.");
         }
+        // Output the flight range of the airplane
+        System.out.println("Flight range of the airplane: " + airplaneManager.calculateFlightRange(boeing737) + " km");
+        // Output the distance between the starting and ending airports
+        System.out.println("Distance between starting and ending airports: "
+                + AirportManager.calculateDistance(miami, losAngeles) + " km");
 
         // Test 5: Deleting a flight path and attempting to display it
         System.out.println("Test 5: Deleting a flight path");

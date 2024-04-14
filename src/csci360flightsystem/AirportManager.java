@@ -9,13 +9,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 import java.util.Vector;
 
 public class AirportManager {
@@ -27,7 +23,7 @@ public class AirportManager {
     // Nested class for the AirportNode
     public class AirportNode {
         private Airport airport;
-        public Map<AirportNode, Double> edges;
+        public Map<AirportNode, Double> edges = new HashMap<>();
 
         public AirportNode(Airport airport) {
             this.airport = airport;
@@ -40,6 +36,10 @@ public class AirportManager {
 
         public void addEdge(AirportNode node, double distance) {
             edges.put(node, distance);
+        }
+
+        public Map<AirportNode, Double> getEdges() {
+            return edges;
         }
 
         @Override
@@ -61,12 +61,12 @@ public class AirportManager {
 
     // Vector list of airports
     private Vector<Airport> airports;
-
+    
     public Vector<Airport> getAirports() {
         return airports;
     }
 
-    public Map<String, AirportNode> airportGraph;
+    public Map<String, AirportNode> airportGraph = new HashMap<>();
 
     // Static instance for the singleton pattern
     private static AirportManager instance;
@@ -87,11 +87,9 @@ public class AirportManager {
         return instance;
     }
 
-    // Method to load all currently documented/saved airports.
-    // This method is called at the beginning of the main method
-    // Along with the LoadingAirplanes() method
-    public static void loadAirports() {
-
+    // Method to get the entire airport graph
+    public Map<String, AirportNode> getAirportGraph() {
+        return airportGraph;
     }
 
     // Method to create a new airport
@@ -234,7 +232,7 @@ public class AirportManager {
     }
 
     // Load airports from file
-    private void loadAirportsFromFile(String fileName) {
+    public void loadAirportsFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -310,73 +308,4 @@ public class AirportManager {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
-
-    public List<Airport> searchForShortestFlightPath(Airport startingAirport, Airport endingAirport,
-            double maxDistanceBetweenNodes, String fuelTypeOfPlane) {
-        // Check if either starting or ending airports are null
-        if (startingAirport == null || endingAirport == null) {
-            System.out.println("Invalid airports provided.");
-            return null;
-        }
-
-        // Create a map to keep track of visited airports
-        Map<Airport, Boolean> visited = new HashMap<>();
-        for (Airport airport : airports) {
-            visited.put(airport, false);
-        }
-
-        // Create a queue for BFS
-        Queue<List<Airport>> queue = new LinkedList<>();
-        List<Airport> path = new ArrayList<>();
-        path.add(startingAirport);
-        queue.offer(path);
-
-        while (!queue.isEmpty()) {
-            path = queue.poll();
-            Airport lastAirport = path.get(path.size() - 1);
-
-            // If the last airport in the path is the ending airport, return the path
-            if (lastAirport.equals(endingAirport)) {
-                return path;
-            }
-
-            // Check if the airport has been visited, if not, mark it as visited
-            if (!visited.get(lastAirport)) {
-                visited.put(lastAirport, true);
-
-                // Get all neighboring airports
-                List<Airport> neighbors = getNeighbors(lastAirport, maxDistanceBetweenNodes, fuelTypeOfPlane);
-
-                // Add neighbors to the queue
-                for (Airport neighbor : neighbors) {
-                    List<Airport> newPath = new ArrayList<>(path);
-                    newPath.add(neighbor);
-                    queue.offer(newPath);
-                }
-            }
-        }
-
-        // If no path is found
-        System.out.println("No path found with current parameters.");
-        return null;
-    }
-
-    // Helper method to get neighboring airports within the maximum distance
-    private List<Airport> getNeighbors(Airport airport, double maxDistance, String fuelTypeOfPlane) {
-        List<Airport> neighbors = new ArrayList<>();
-        AirportNode node = airportGraph.get(airport.getICAO());
-
-        // Iterate through neighboring airports
-        for (Map.Entry<AirportNode, Double> entry : node.edges.entrySet()) {
-            AirportNode neighborNode = entry.getKey();
-            Airport neighborAirport = neighborNode.getAirport();
-            double distance = entry.getValue();
-            if (distance <= maxDistance && neighborAirport.getFuelType().equalsIgnoreCase(fuelTypeOfPlane)) { // FuelTypeComparator
-                neighbors.add(neighborNode.getAirport());
-            }
-        }
-
-        return neighbors;
-    }
-
 }
