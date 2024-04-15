@@ -9,9 +9,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Vector;
 import java.util.Scanner;
 
@@ -410,7 +414,6 @@ public class AirportManager {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
-}
 
     public List<Airport> searchForShortestFlightPath(Airport startingAirport, Airport endingAirport,
             double maxDistanceBetweenNodes, String fuelTypeOfPlane) {
