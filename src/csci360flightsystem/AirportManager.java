@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Vector;
+import java.util.Scanner;
 
 public class AirportManager {
 
@@ -92,6 +93,31 @@ public class AirportManager {
         return airportGraph;
     }
 
+    public static void userCreateAirport() {
+        AirportManager airportManager = AirportManager.getInstance();
+        Scanner userInput = new Scanner(System.in);
+    
+        System.out.println("\nPlease enter information about the airport...");
+        System.out.println("Enter ICAO Code...");
+        String icaoTemp = userInput.next();
+        System.out.println("Enter Radio Frequency...");
+        double radioFreqTemp = userInput.nextDouble();
+        System.out.println("Enter Radio Type...");
+        String radioTypeTemp = userInput.next();
+        System.out.println("Enter Fuel Type...");
+        String fuelTypeTemp = userInput.next();
+        System.out.println("Enter Latitude...");
+        double latitudeTemp = userInput.nextDouble();
+        System.out.println("Enter Longitude...");
+        double longitudeTemp = userInput.nextDouble();
+        System.out.println("Enter Airport Name...");
+        String nameTemp = userInput.next();
+    
+        Airport tempAirport = new Airport(icaoTemp, radioFreqTemp, radioTypeTemp, fuelTypeTemp, latitudeTemp,
+                longitudeTemp, nameTemp);
+        airportManager.createAirport(tempAirport);
+    }
+
     // Method to create a new airport
     public void createAirport(Airport airport) {
         // Validate the airport object
@@ -133,14 +159,70 @@ public class AirportManager {
         saveAirportsToFile(FILE_LOCATION);
     }
 
+    public static void UIModifyAirport() {
+        AirportManager airportManager = AirportManager.getInstance();
+        Scanner userInput = new Scanner(System.in);
+    
+        System.out.println("\nEnter ICAO Code of Airport you would like to modify");
+        String icaoTemp = userInput.next();
+        Airport airportTemp = airportManager.searchAirport(icaoTemp);
+    
+        if (airportTemp != null) {
+            airportManager.userModifyAirport(airportTemp);
+        } else {
+            System.out.println("Airport with ICAO code " + icaoTemp + " not found.");
+        }
+    }
+    
+
+    public void userModifyAirport(Airport passedAirport) {
+        AirportManager airportManager = AirportManager.getInstance();
+        Scanner userInput = new Scanner(System.in);
+    
+        airports.remove(passedAirport);
+    
+        System.out.println("Please enter information about the airport...");
+        System.out.println("Enter ICAO Code...");
+        String icaoTemp = userInput.next();
+        System.out.println("Enter Radio Frequency...");
+        double radioFreqTemp = userInput.nextDouble();
+        System.out.println("Enter Radio Type...");
+        String radioTypeTemp = userInput.next();
+        System.out.println("Enter Fuel Type...");
+        String fuelTypeTemp = userInput.next();
+        System.out.println("Enter Latitude...");
+        double latitudeTemp = userInput.nextDouble();
+        System.out.println("Enter Longitude...");
+        double longitudeTemp = userInput.nextDouble();
+        System.out.println("Enter Airport Name...");
+        String nameTemp = userInput.next();
+    
+        Airport tempAirport = new Airport(icaoTemp, radioFreqTemp, radioTypeTemp, fuelTypeTemp, latitudeTemp,
+                longitudeTemp, nameTemp);
+        airportManager.createAirport(tempAirport);
+    }
+    
+
     // Method to delete an airport
     public void deleteAirport(Airport airport) {
         airports.remove(airport);
         saveAirportsToFile(FILE_LOCATION);
     }
 
+    public static void deleteAirportByICAO(){
+        AirportManager airportManager = AirportManager.getInstance();
+        
+        Scanner userInput = new Scanner(System.in);
+
+        System.out.println("\nPlease enter ICAO of airport you would like to delete...");
+        String ICAOTemp = userInput.next();
+
+        airportManager.deleteAirport(airportManager.searchAirport(ICAOTemp));
+    }
+
     // Method to display all airports
     public void displayAirports() {
+        System.out.println();
         for (Airport airport : airports) {
             System.out.println(airport);
         }
@@ -206,20 +288,26 @@ public class AirportManager {
         if (startingAirport == null || endingAirport == null || startingAirport.equals(endingAirport)) {
             throw new IllegalArgumentException("Invalid airports provided.");
         }
-
+    
         double lat1 = Math.toRadians(startingAirport.getLatitude());
         double lon1 = Math.toRadians(startingAirport.getLongitude());
         double lat2 = Math.toRadians(endingAirport.getLatitude());
         double lon2 = Math.toRadians(endingAirport.getLongitude());
-
+    
         double dlon = lon2 - lon1;
         double dlat = lat2 - lat1;
-
+    
         double a = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return R * c;
+    
+        double distance = R * c;
+    
+        // Truncate the result to two decimal points
+        distance = Math.round(distance * 100.0) / 100.0;
+    
+        return distance;
     }
+    
 
     // Method to search for an airport by code
     public Airport searchAirport(String code) {
@@ -229,6 +317,20 @@ public class AirportManager {
             }
         }
         return null; // Return null if airport with specified code is not found
+    }
+
+    public static void UISearchAirport(){
+        AirportManager airportManager = AirportManager.getInstance();
+        Scanner userInput = new Scanner(System.in);
+        System.out.println("\nEnter ICAO of airport you would like to search for...");
+
+        String ICAOTemp = userInput.next();
+
+        if(airportManager.searchAirport(ICAOTemp) != null){
+            System.out.println("\nAirport Found! Information is as follows..." + airportManager.searchAirport(ICAOTemp).toString());
+        }else{
+            System.out.println("\nAirport not found :(");
+        }
     }
 
     // Load airports from file
@@ -308,4 +410,86 @@ public class AirportManager {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
+}
+
+    public List<Airport> searchForShortestFlightPath(Airport startingAirport, Airport endingAirport,
+            double maxDistanceBetweenNodes, String fuelTypeOfPlane) {
+
+
+        // Check if either starting or ending airports are null
+        
+        if (startingAirport == null || endingAirport == null) {
+            System.out.println("Invalid airports provided.");
+            return null;
+        }
+
+        if(calculateDistance(startingAirport, endingAirport) < maxDistanceBetweenNodes){
+            System.out.println("\nDirect Flight Available!");
+            System.out.println(startingAirport);
+            System.out.println(endingAirport);
+            System.out.println("Distance of flight is..." + calculateDistance(startingAirport, endingAirport) + " km");
+            System.out.println("Heading is " + FlightPath.calculateHeading(startingAirport, endingAirport));
+            return null;
+        }
+
+        // Create a map to keep track of visited airports
+        Map<Airport, Boolean> visited = new HashMap<>();
+        for (Airport airport : airports) {
+            visited.put(airport, false);
+        }
+
+        // Create a queue for BFS
+        Queue<List<Airport>> queue = new LinkedList<>();
+        List<Airport> path = new ArrayList<>();
+        path.add(startingAirport);
+        queue.offer(path);
+
+        while (!queue.isEmpty()) {
+            path = queue.poll();
+            Airport lastAirport = path.get(path.size() - 1);
+
+            // If the last airport in the path is the ending airport, return the path
+            if (lastAirport.equals(endingAirport)) {
+                return path;
+            }
+
+            // Check if the airport has been visited, if not, mark it as visited
+            if (!visited.get(lastAirport)) {
+                visited.put(lastAirport, true);
+
+                // Get all neighboring airports
+                List<Airport> neighbors = getNeighbors(lastAirport, maxDistanceBetweenNodes, fuelTypeOfPlane);
+
+                // Add neighbors to the queue
+                for (Airport neighbor : neighbors) {
+                    List<Airport> newPath = new ArrayList<>(path);
+                    newPath.add(neighbor);
+                    queue.offer(newPath);
+                }
+            }
+        }
+
+        // If no path is found
+        System.out.println("\nNo path found with current parameters.");
+        return null;
+    }
+
+    // Helper method to get neighboring airports within the maximum distance
+    private List<Airport> getNeighbors(Airport airport, double maxDistance, String fuelTypeOfPlane) {
+        List<Airport> neighbors = new ArrayList<>();
+        AirportNode node = airportGraph.get(airport.getICAO());
+
+        // Iterate through neighboring airports
+        for (Map.Entry<AirportNode, Double> entry : node.edges.entrySet()) {
+            AirportNode neighborNode = entry.getKey();
+            Airport neighborAirport = neighborNode.getAirport();
+            double distance = entry.getValue();
+            if (distance <= maxDistance && neighborAirport.getFuelType().equalsIgnoreCase(fuelTypeOfPlane)) { // FuelTypeComparator
+                neighbors.add(neighborNode.getAirport());
+            }
+        }
+
+        return neighbors;
+    }
+
 }

@@ -1,0 +1,162 @@
+//THIS FILE IS DEDICATED TO TEST CASES, LEAVE PLENTY OF ROOM IN BETWEEN CASES 
+
+
+
+//List of real world airports for reference
+Airport newYorkJFK = new Airport("KJFK", 123.90, "VHF", "JetA", 40.6413, -73.7781, "New York JFK");
+Airport sanFrancisco = new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco");
+Airport miami = new Airport("KMIA", 119.15, "VHF", "JetA", 25.7959, -80.2870, "Miami");
+Airport dallasFtWorth = new Airport("KDFW", 135.00, "VHF", "JetA", 32.8998, -97.0403, "Dallas/Ft Worth");
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+Airport vancouver = new Airport("CYVR", 119.55, "VHF", "JetA", 49.1947, -123.1838, "Vancouver");
+Airport montreal = new Airport("CYUL", 121.90, "VHF", "JetA", 45.4715, -73.7408, "Montreal");
+Airport calgary = new Airport("CWES", 140.77, "VHF", "JetA", 0, 180.00, "Far West");
+Airport edmonton = new Airport("CNOR", 299.99, "VHF", "JetA", 90.00, 0, "Santa's Workshop");
+Airport minneapolis = new Airport("KMSP", )
+
+//Initialize airports
+airportManager.createAirport(new Airport("KJFK", 123.90, "VHF", "JetA", 40.6413, -73.7781, "New York JFK"));
+airportManager.createAirport(new Airport("KSFO", 118.85, "VHF", "JetA", 37.6213, -122.3790, "San Francisco"));
+airportManager.createAirport(new Airport("KMIA", 119.15, "VHF", "JetA", 25.7959, -80.2870, "Miami"));
+airportManager.createAirport(new Airport("KDFW", 135.00, "VHF", "JetA", 32.8998, -97.0403, "Dallas/Ft Worth"));
+airportManager.createAirport(new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta"));
+airportManager.createAirport(new Airport("CYUL", 121.90, "VHF", "JetA", 45.4715, -73.7408, "Montreal"));
+airportManager.createAirport(new Airport("CWES", 140.77, "VHF", "JetA", 0, 180.00, "Far West"));
+airportManager.createAirport(new Airport("CNOR", 299.99, "VHF", "JetA", 90.00, 0, "Santa's Workshop"));
+
+
+
+// Testing creation of airports, distance calculation, display of nodes and edges, 
+// display a list of all airports, modify existing airports, delete an airport, 
+// and search for an airport.
+// Creating an instance of the AirportManager class
+AirportManager manager = AirportManager.getInstance();
+
+// Test 1: Creating and adding airports
+System.out.println("Test 1: Creating and adding airports");
+Airport atlanta = new Airport("KATL", 122.95, "VHF", "JetA", 33.6362, -84.4294, "Atlanta");
+Airport toronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.6771, -79.6306, "Toronto");
+manager.createAirport(atlanta);
+manager.createAirport(toronto);
+
+// Displaying all airports after addition
+System.out.println("Displaying all airports after addition:");
+manager.displayAirports();
+
+// Test 2: Calculating distance between two airports
+System.out.println("Test 2: Calculating distance between Atlanta and Toronto");
+double distance = AirportManager.calculateDistance(atlanta, toronto);
+System.out.println("Distance between Atlanta and Toronto is: " + distance + " kilometers");
+
+// Test 3: Displaying nodes and edges
+System.out.println("Test 3: Displaying nodes and edges");
+manager.displayNodesAndEdges();
+
+// Test 4: Modifying an existing airport
+System.out.println("Test 4: Modifying an existing airport");
+Airport modifiedToronto = new Airport("CYYZ", 118.70, "VHF", "JetA", 43.7771, -79.6276, "Toronto Mod");
+manager.modifyAirport("CYYZ", modifiedToronto);
+
+// Displaying all airports after modification
+System.out.println("Displaying all airports after modification:");
+manager.displayAirports();
+
+// Test 5: Deleting an airport
+System.out.println("Test 5: Deleting an airport");
+manager.deleteAirport(modifiedToronto);
+
+// Displaying all airports after deletion
+System.out.println("Displaying all airports after deletion:");
+manager.displayAirports();
+
+// Test 6: Searching for an airport
+System.out.println("Test 6: Searching for an airport");
+Airport searchResult = manager.searchAirport("KATL");
+if (searchResult != null) {
+    System.out.println("Found airport: " + searchResult.getName());
+} else {
+    System.out.println("Airport not found.");
+}
+
+
+
+//List of real world airplanes for reference
+airplanes
+Airplane boeing737 = new Airplane(850, 2600, 12600, "Jet A-1", 0, "Boeing", "737-800", "Commercial Jet");
+Airplane airbusA320 = new Airplane(905, 2400, 18380, "Jet A-1", 1, "Airbus", "A320", "Commercial Jet");
+Airplane boeing777 = new Airplane(1225, 850, 2620, "Aviation Gasoline", 2, "Cessna", "Citation XLS", "Business Jet");
+Airplane airbusA380 = new Airplane(750, 2900, 20820, "Jet A-1", 3, "McDonnell Douglas", "MD-80", "Commercial Jet");
+Airplane boeing787 = new Airplane(470, 100, 456, "Aviation Gasoline", 4, "Piper", "PA-28 Cherokee", "Light Aircraft");
+Airplane airbusA350 = new Airplane(590, 1200, 6442, "Jet A-1", 5, "Embraer", "EMB 145", "Regional Jet");
+Airplane boeing747 = new Airplane(490, 80, 300, "Aviation Gasoline", 6, "Beechcraft", "Bonanza", "Light Aircraft");
+Airplane bombardierCRJ900 = new Airplane(840, 2600, 10100, "Jet A-1", 7, "Bombardier", "CRJ-700", "Regional Jet");
+Airplane embraerE175 = new Airplane(917, 2500, 13400, "Jet A-1", 8, "Airbus", "A330", "Wide-body Jet");
+Airplane cessna172 = new Airplane(965, 3400, 18390, "Jet A-1", 9, "Boeing", "777", "Wide-body Jet");
+
+
+
+// Testing creation of airplanes, calculate flight range, search for an airplane,
+// display a list of all airplanes, modify existing airplanes, and delete an airplane.
+// Creating an instance of the AirplaneManager class
+AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+// Test 1: Creating and adding airplanes
+System.out.println("Test 1: Creating and adding airplanes");
+Airplane boeing737 = new Airplane(850, 2600, 12600, "Jet A-1", 0, "Boeing", "737-800", "Commercial Jet");
+Airplane airbusA320 = new Airplane(905, 2400, 18380, "Jet A-1", 1, "Airbus", "A320", "Commercial Jet");
+airplaneManager.createAirplane(boeing737);
+airplaneManager.createAirplane(airbusA320);
+
+// Displaying all airplanes after addition
+System.out.println("Displaying all airplanes after addition:");
+airplaneManager.displayAirplanes();
+
+// Test 2: Modifying an existing airplane
+System.out.println("Test 2: Modifying an existing airplane");
+Airplane modifiedAirbus = new Airplane(905, 2400, 18380, "Jet A-1", 1, "Neo Airbus", "A320", "Commercial Jet");
+airplaneManager.modifyAirplane(1, modifiedAirbus);
+
+// Displaying all airplanes after modification
+System.out.println("Displaying all airplanes after modification:");
+airplaneManager.displayAirplanes();
+
+// Test 3: Deleting an airplane
+System.out.println("Test 3: Deleting an airplane");
+airplaneManager.deleteAirplane(modifiedAirbus);
+
+// Displaying all airplanes after deletion
+System.out.println("Displaying all airplanes after deletion:");
+airplaneManager.displayAirplanes();
+
+// Test 4: Searching for an airplane
+System.out.println("Test 4: Searching for an airplane");
+Airplane searchResult = airplaneManager.searchAirplane(1);
+if (searchResult != null) {
+    System.out.println("Found airplane: " + searchResult.getMake() + " " + searchResult.getModel());
+} else {
+    System.out.println("Airplane not found.");
+}
+
+// Test 5: Calculating the flight range of an airplane
+System.out.println("Test 5: Calculating the flight range of an airplane");
+double flightRange = airplaneManager.calculateFlightRange(boeing737);
+System.out.println("The flight range of the Boeing 737 is: " + flightRange + " kilometers");
+
+
+
+// Testing creation of flightpaths, modifying existing flightpaths, deleting existing flightpaths, 
+// display a specific flightpath by key, calculating the heading and direction, and launching a flight, 
+// and displaying all flight paths. 
+
+// Test 1: Creating a flight path
+// Displaying all flight paths
+
+// Test 2: Modifying an existing fligh path and displaying it
+
+// Test 3: Deleting a flight path and attempting to display it
+// Displaying all flight paths
+
+// Test 4: Calculate the heading and direction of a flight
+
+// Test 5: Launching a flight

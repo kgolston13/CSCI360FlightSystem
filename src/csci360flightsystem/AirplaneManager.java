@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
+import java.util.Scanner;
 
 public class AirplaneManager {
 
@@ -37,6 +38,82 @@ public class AirplaneManager {
         return instance;
     }
 
+    public static void userCreateAirplane(){
+        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+        Scanner userInput = new Scanner(System.in);
+
+        System.out.println("Please enter information about the airplane...");
+        System.out.println("Enter Airspeed...");
+        double airspdTemp = userInput.nextDouble();
+        System.out.println("Enter Fuel Burn Rate");
+        double fuelBurnTemp = userInput.nextDouble();
+        System.out.println("Enter Fuel Capacity");
+        double fuelCapTemp = userInput.nextDouble();
+        System.out.println("Enter Fuel Type");
+        String fuelTypeTemp = userInput.next();
+        System.out.println("Enter Key for plane (must be unique)");
+        int tempKey = userInput.nextInt();
+        System.out.println("Enter Make");
+        String makeTemp = userInput.next();
+        System.out.println("Enter Model");
+        String modelTemp = userInput.next();
+        System.out.println("Enter Plane Type");
+        String typeTemp = userInput.next();
+
+        Airplane temAirplane = new Airplane(airspdTemp, fuelBurnTemp, fuelCapTemp, fuelTypeTemp, tempKey, makeTemp,
+                modelTemp, typeTemp);
+        airplaneManager.createAirplane(temAirplane);
+
+        // Displaying all airplanes after addition
+        System.out.println("\nDisplaying all airplanes after addition:");
+        airplaneManager.displayAirplanes();
+    }
+
+    public static void UIModifyAirplane(){
+        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+        Scanner userInput = new Scanner(System.in);
+        
+        System.out.println("\nEnter Model of Plane you would like to modify");
+        String modelTemp = userInput.next();
+        Airplane airplaneTemp = airplaneManager.getAirplaneByModel(modelTemp);
+
+        if (airplaneTemp != null) {
+            airplaneManager.userModifyAirplane(airplaneTemp);
+        }
+    }
+
+    public void userModifyAirplane(Airplane passedAirplane){
+        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+        Scanner userInput = new Scanner(System.in);
+
+        airplanes.remove(passedAirplane);
+
+        System.out.println("Please enter information about the airplane...");
+        System.out.println("Enter Airspeed...");
+        double airspdTemp = userInput.nextDouble();
+        System.out.println("Enter Fuel Burn Rate");
+        double fuelBurnTemp = userInput.nextDouble();
+        System.out.println("Enter Fuel Capacity");
+        double fuelCapTemp = userInput.nextDouble();
+        System.out.println("Enter Fuel Type");
+        String fuelTypeTemp = userInput.next();
+        System.out.println("Enter Key for plane (must be unique)");
+        int tempKey = userInput.nextInt();
+        System.out.println("Enter Make");
+        String makeTemp = userInput.next();
+        System.out.println("Enter Model");
+        String modelTemp = userInput.next();
+        System.out.println("Enter Plane Type");
+        String typeTemp = userInput.next();
+
+        Airplane temAirplane = new Airplane(airspdTemp, fuelBurnTemp, fuelCapTemp, fuelTypeTemp, tempKey, makeTemp,
+                modelTemp, typeTemp);
+        airplaneManager.createAirplane(temAirplane);
+    }
+
     // Method to create a new airplane
     public void createAirplane(Airplane airplane) {
         // Validate the airplane object
@@ -61,6 +138,38 @@ public class AirplaneManager {
         saveAirplanesToFile(FILE_LOCATION);
     }
 
+    public Airplane displayAirplaneByModel(String model){
+        int tempKey = findAircraftKey(model);
+        if(tempKey == -1){
+            System.out.println("\nPlane not found :(");
+            return null;
+        }
+        Airplane result = searchAirplane(tempKey);
+        System.out.println("\nPlane found! information is as follows... " + result.toString());
+        return result;
+    }
+
+    public static void deleteAirplaneByModel(){
+        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+        Scanner userInput = new Scanner(System.in);
+
+        System.out.println("\nPlease enter Model of plane you would like to delete...");
+        String modelTemp = userInput.next();
+
+        airplaneManager.deleteAirplane(airplaneManager.getAirplaneByModel(modelTemp));
+    }
+
+    public Airplane getAirplaneByModel(String model){
+        int tempKey = findAircraftKey(model);
+        if(tempKey == -1){
+            System.out.println("\nPlane not found :(");
+            return null;
+        }
+        Airplane result = searchAirplane(tempKey);
+        return result;
+    }
+
     // Method to delete an airplane
     public void deleteAirplane(Airplane airplane) {
         airplanes.remove(airplane);
@@ -69,6 +178,7 @@ public class AirplaneManager {
 
     // Method to display all airplanes
     public void displayAirplanes() {
+        System.out.println();
         for (Airplane airplane : airplanes) {
             System.out.println(airplane);
         }
@@ -121,6 +231,33 @@ public class AirplaneManager {
             }
         }
         return null;
+    }
+
+    public static void searchAirplaneByModel(){
+        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+        Scanner userInput = new Scanner(System.in);
+
+        System.out.println("\nPlease enter model of plane you would like to search for");
+        String modelTemp = userInput.next();
+
+        airplaneManager.displayAirplaneByModel(modelTemp);
+    }
+
+    public static int findAircraftKey(String model) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\csci360flightsystem\\Airplanes.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                //System.out.println(data[6]);
+                if (data[6].toString().equals(model)) {
+                    return Integer.parseInt(data[4]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1; // or any other suitable indicator for not found
     }
 
     // Load airplanes from file

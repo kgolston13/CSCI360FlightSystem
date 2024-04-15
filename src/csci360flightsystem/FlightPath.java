@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.Scanner;
 
 import csci360flightsystem.AirportManager.AirportNode;
 
@@ -294,24 +295,29 @@ public class FlightPath {
 
     // Method to calulate the heading of the flight path
     public static double calculateHeading(Airport startingAirport, Airport endingAirport) {
-
         if (startingAirport == null || endingAirport == null) {
             throw new IllegalStateException("Start or end airport not found.");
         }
-
+    
         double lat1 = Math.toRadians(startingAirport.getLatitude());
         double lon1 = Math.toRadians(startingAirport.getLongitude());
         double lat2 = Math.toRadians(endingAirport.getLatitude());
         double lon2 = Math.toRadians(endingAirport.getLongitude());
-
+    
         double dLon = lon2 - lon1;
-
+    
         double y = Math.sin(dLon) * Math.cos(lat2);
         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
         double theta = Math.atan2(y, x);
-
-        return (Math.toDegrees(theta) + 360) % 360;
+    
+        double heading = (Math.toDegrees(theta) + 360) % 360;
+    
+        // Truncate the result to four decimal points
+        heading = Math.round(heading * 10000.0) / 10000.0;
+    
+        return heading;
     }
+    
 
     // Direction based on heading
     public static String direction(double heading) {
@@ -335,6 +341,20 @@ public class FlightPath {
             return "Unknown";
         }
     }
+
+    public static double calculateFlightTime(double distanceKm, double cruiseSpeedKnots) {
+        // Convert cruise speed from knots to km/h (1 knot ≈ 1.852 km/h)
+        double cruiseSpeedKmh = cruiseSpeedKnots * 1.852;
+        
+        // Calculate time (hours) = distance (km) / speed (km/h)
+        double flightTimeHours = distanceKm / cruiseSpeedKmh;
+        
+        // Truncate the result to two decimal points
+        flightTimeHours = Math.round(flightTimeHours * 100.0) / 100.0;
+        
+        return flightTimeHours;
+    }
+    
 
     // Load flight paths from file
     private void loadFlightPathsFromFile(String fileName) {
@@ -373,6 +393,60 @@ public class FlightPath {
         }
     }
 
+    public static void LaunchFlightPath2(){
+
+        AirportManager airportManager = AirportManager.getInstance();
+        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+
+        Scanner userInput = new Scanner(System.in);
+
+        System.out.println("Please enter Starting Airport");
+        String startAirport = userInput.next();
+        System.out.println("Please enter ending Airport");
+        String endAirport = userInput.next();
+        System.out.println("Enter model of airplane");
+        String modelTemp = userInput.next();
+        double tempRange = (airplaneManager.calculateFlightRange(airplaneManager.getAirplaneByModel(modelTemp)));
+        String tempFuel = (airplaneManager.getAirplaneByModel(modelTemp).getFuelType());
+        
+        // Call the method directly with parameters
+        List<Airport> shortestFlightPath = airportManager.searchForShortestFlightPath(
+                /* startingAirport */ airportManager.searchAirport(startAirport),
+                /* endingAirport */ airportManager.searchAirport(endAirport),
+                /* maxDistanceBetweenNodes */ tempRange, // This value will be replaced by plane max distance
+                
+                /* fuelTypeOfPlane */tempFuel);                                   // This value will be set by Airplane.getFuelType()
+    
+        // Check if a path is found
+        if (shortestFlightPath != null) {
+            // Print the shortest flight path
+            System.out.println("\nShortest Flight Path:");
+            Airport previousAirport = null;
+            double totalDistance = 0;
+            double totalTime = 0;
+            for (Airport airport : shortestFlightPath) {
+                System.out.println(airport);
+                if (previousAirport != null && shortestFlightPath.size() > 2){
+                    double distanceTemp = AirportManager.calculateDistance(airport, previousAirport);
+                    System.out.println("Connecting flight distance is..." + distanceTemp + "km");
+                    double headingTemp = calculateHeading(airport, previousAirport);
+                    System.out.println("Heading is " + headingTemp);
+                    double timeTemp = calculateFlightTime(distanceTemp, airplaneManager.getAirplaneByModel(modelTemp).airspeed);
+                    System.out.println("Time to complete this leg is " + timeTemp + " hrs");
+                    totalDistance += distanceTemp;
+                    totalTime += timeTemp;
+                }
+                previousAirport = airport;
+            }
+            if(shortestFlightPath.size() == 2){
+                totalDistance = AirportManager.calculateDistance(airportManager.searchAirport(startAirport),airportManager.searchAirport(endAirport));
+            }
+            //double headingTemp = calculateHeading(airportManager.searchAirport(startAirport),airportManager.searchAirport(endAirport));
+
+            System.out.println("Total distance of trip is..." + totalDistance + "km"); 
+            System.out.println("Total Time is " + totalTime + " hrs");
+        }
+    }
     // Save flight paths to file
     private static void saveFlightPathsToFile(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
@@ -387,6 +461,10 @@ public class FlightPath {
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
+
+        
+
+
     }
 
     // Main method for the FlightPath class
@@ -400,76 +478,89 @@ public class FlightPath {
         // Add airports for testing
         // Airports for testing
         AirportManager airportManager = AirportManager.getInstance();
-        Airport augusta = new Airport("KAGS", 270.30, "VHF", "JetA", 33.3703, -81.9649, "Augusta");
-        Airport miami = new Airport("KMIA", 123.00, "VHF", "JetA", 25.7951, -80.2795, "Miami");
-        Airport dallas = new Airport("KDFW", 122.95, "VHF", "JetA", 32.8990, -97.0336, "Dallas");
-        Airport losAngeles = new Airport("KLAX", 122.95, "VHF", "JetA", 33.9422, -118.4036, "Los Angeles");
-        Airport seattle = new Airport("KSEA", 119.90, "VHF", "JetA", 47.4484, -122.3086, "Seattle");
-        Airport minneapolis = new Airport("KMSP", 122.95, "VHF", "JetA", 44.8851, -93.2144, "Minneapolis");
-        Airport portland = new Airport("KPWM", 120.90, "VHF", "JetA", 43.6465, -43.6465, "Portland");
-        Airport washington = new Airport("KIAD", 135.70, "VHF", "JetA", 38.9523, -77.4586, "Washington");
-        Airport vancouver = new Airport("CYVR", 133.10, "VHF", "JetA", 49.1934, -123.1751, "Vancouver");
-        Airport whitehorse = new Airport("CYXY", 121.90, "VHF", "JetA", 60.7141, -135.0761, "Whitehorse");
-        Airport iqaluit = new Airport("CYFB", 122.20, "VHF", "JetA", 63.7570, -68.5450, "Iqaluit");
-        Airport stJohns = new Airport("CYYT", 132.05, "VHF", "JetA", 47.3707, -52.4509, "St. John's");
 
-        // Create airports
-        airportManager.createAirport(augusta);
-        airportManager.createAirport(miami);
-        airportManager.createAirport(dallas);
-        airportManager.createAirport(losAngeles);
-        airportManager.createAirport(seattle);
-        airportManager.createAirport(minneapolis);
-        airportManager.createAirport(portland);
-        airportManager.createAirport(washington);
-        airportManager.createAirport(vancouver);
-        airportManager.createAirport(whitehorse);
-        airportManager.createAirport(iqaluit);
-        airportManager.createAirport(stJohns);
-
-        // Call the displayNodesAndEdges method to test if edges and nodes are set up
-        airportManager.displayNodesAndEdges();
-
-        // Add an airplane for testing
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
-        Airplane boeing777 = new Airplane(1225, 850, 2620, "JetA", 2, "Cessna", "Citation XLS", "Business Jet");
-        airplaneManager.createAirplane(boeing777);
 
-        // Test 1: Creating a flight path and display it
-        System.out.println("Test 1: Creating a flight path");
-        FlightPath flightPath1 = new FlightPath(1, "KAGS", Arrays.asList(), "KMIA", boeing777);
-        createFlightPath(flightPath1);
+        Scanner userInput = new Scanner(System.in);
 
-        displayFlightPaths();
+        boolean end = false;
+        
+        System.out.println("THIS SOFTWARE IS NOT TO BE USED FOR FLIGHT PLANNING OR NAVIGATIONAL PURPOSE");
 
-        // Test 2: Modifying an existing fligh path and display it
-        System.out.println("Test 2: Modifying an existing flight path");
-        FlightPath newFlightPathDetails = new FlightPath(1, "KMIA", Arrays.asList(), "CYFB", boeing777);
-        modifyFlightPath(1, newFlightPathDetails);
-
-        displayFlightPaths();
-
-        // Test 3: Calculate the heading and direction of a flight
-        System.out.println("Test 3: Calculate the heading and direction of a flight");
-        System.out.println("Heading: " + calculateHeading(miami, iqaluit) + " degrees" + " ("
-                + direction(calculateHeading(miami, iqaluit)) + ")");
-
-        // Test 4: Launching a flight
-        System.out.println("Test 4: Launching a flight");
-        if (flightPath1.getStartingAirport() != null && flightPath1.getEndingAirport() != null) {
-            flightPath1.launchFlight(flightPath1.getStartingAirport(), flightPath1.getEndingAirport(), boeing777);
-        } else {
-            System.out.println("Flight cannot be launched due to invalid airports.");
+        while (!end) {
+            System.out.println("\n0: Add Airplane");
+            System.out.println("1: Delete Airplane");
+            System.out.println("2: Modify Airplane");
+            System.out.println("3: Search Airplane");
+            System.out.println("4: Display Airplanes");
+            System.out.println("5: Add Airports");
+            System.out.println("6: Delete Airports");
+            System.out.println("7: Modify Airports");
+            System.out.println("8: Search Airports");
+            System.out.println("9: Display Airports");
+            System.out.println("10: Launch Flight Path Finder");
+            System.out.println("-1: Exit Program");
+            
+            int choice = userInput.nextInt();
+            
+            switch (choice) {
+                case 0:
+                AirplaneManager.userCreateAirplane();
+                break;
+                case 1:
+                AirplaneManager.deleteAirplaneByModel();
+                break;
+                case 2:
+                AirplaneManager.UIModifyAirplane();
+                break;
+                case 3:
+                AirplaneManager.searchAirplaneByModel();
+                break;
+                case 4:
+                airplaneManager.displayAirplanes();
+                break;
+                case 5:
+                AirportManager.userCreateAirport();
+                break;
+                case 6:
+                AirportManager.deleteAirportByICAO();
+                break;
+                case 7:
+                AirportManager.UIModifyAirport();
+                break;
+                case 8:
+                AirportManager.UISearchAirport();
+                break;
+                case 9:
+                airportManager.displayAirports();
+                break;
+                case 10:
+                LaunchFlightPath2();
+                break;
+                case -1:
+                end = true;
+                break;
+                default:
+                System.out.println("Invalid choice. Please enter a valid option.");
+                break;
+            }
         }
-        // Output the flight range of the airplane
-        System.out.println("Flight range of the airplane: " + airplaneManager.calculateFlightRange(boeing777) + " km");
-        // Output the distance between the starting and ending airports
-        System.out.println("Distance between starting and ending airports: "
-                + AirportManager.calculateDistance(miami, iqaluit) + " km");
+        
+        //Airplane tests
+        //AirplaneManager.userCreateAirplane();
+        //AirplaneManager.deleteAirplaneByModel();
+        //AirplaneManager.UIModifyAirplane();
+        //AirplaneManager.searchAirplaneByModel();
+        //airplaneManager.displayAirplanes();
+        
+        //Airport tests
+        //AirportManager.userCreateAirport();
+        //AirportManager.deleteAirportByICAO();
+        //AirportManager.UIModifyAirport();
+        //AirportManager.UISearchAirport();
+        //airportManager.displayAirports();
 
-        // Test 5: Deleting a flight path and attempting to display it
-        System.out.println("Test 5: Deleting a flight path");
-        deleteFlightPath(1);
-        displayFlightPaths();
+        //Flight path test
+        //LaunchFlightPath2();
     }
 }
