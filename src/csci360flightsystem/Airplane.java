@@ -15,7 +15,7 @@ public class Airplane {
     public double fuelBurn;
     // The amount of fuel an aircraft can hold, represented by type double.
     public double fuelCapacity;
-    // The type of fuel an airplane uses, represented by type string
+    // The type of fuel an airplane uses, represented by type String
     public String fuelType;
     // The unique identifier of an airplane, represented by type String.
     public int key;
