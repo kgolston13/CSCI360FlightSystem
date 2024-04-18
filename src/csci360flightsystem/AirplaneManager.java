@@ -245,7 +245,7 @@ public class AirplaneManager {
     }
 
     public static int findAircraftKey(String model) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src\\csci360flightsystem\\Airplanes.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/csci360flightsystem/Airplanes.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
