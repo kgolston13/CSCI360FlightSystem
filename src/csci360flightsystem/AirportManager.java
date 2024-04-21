@@ -12,8 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Vector;
 import java.util.Scanner;
@@ -21,13 +22,13 @@ import java.util.Scanner;
 public class AirportManager {
 
     // variable for file location
-    private static final String FILE_LOCATION = "src\\csci360flightsystem\\Airports.txt";
+    private static final String FILE_LOCATION = "src/csci360flightsystem/Airports.txt";
 
     // CSCI360FlightSystem/src/csci360flightsystem/Airplanes.txt
     // Nested class for the AirportNode
     public class AirportNode {
         private Airport airport;
-        public Map<AirportNode, Double> edges;
+        public Map<AirportNode, Double> edges = new HashMap<>();
 
         public AirportNode(Airport airport) {
             this.airport = airport;
@@ -41,16 +42,36 @@ public class AirportManager {
         public void addEdge(AirportNode node, double distance) {
             edges.put(node, distance);
         }
+
+        public Map<AirportNode, Double> getEdges() {
+            return edges;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            AirportNode that = (AirportNode) o;
+            return Objects.equals(airport.getICAO(), that.airport.getICAO());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(airport.getICAO());
+        }
+
     }
 
     // Vector list of airports
     private Vector<Airport> airports;
-
+    
     public Vector<Airport> getAirports() {
         return airports;
     }
 
-    public Map<String, AirportNode> airportGraph;
+    public Map<String, AirportNode> airportGraph = new HashMap<>();
 
     // Static instance for the singleton pattern
     private static AirportManager instance;
@@ -71,11 +92,9 @@ public class AirportManager {
         return instance;
     }
 
-    // Method to load all currently documented/saved airports.
-    // This method is called at the beginning of the main method
-    // Along with the LoadingAirplanes() method
-    public static void loadAirports() {
-
+    // Method to get the entire airport graph
+    public Map<String, AirportNode> getAirportGraph() {
+        return airportGraph;
     }
 
     public static void userCreateAirport() {
@@ -319,12 +338,17 @@ public class AirportManager {
     }
 
     // Load airports from file
-    private void loadAirportsFromFile(String fileName) {
+    public void loadAirportsFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 // Split the line by comma to extract attributes
                 String[] attributes = line.split(",");
+                // Check if the line has the correct number of attributes
+                if (attributes.length != 7) {
+                    System.err.println("Skipping invalid line: " + line);
+                    continue;
+                }
                 // Create a new Airport object from attributes
                 Airport airport = new Airport(attributes[0],
                         Double.parseDouble(attributes[1]),

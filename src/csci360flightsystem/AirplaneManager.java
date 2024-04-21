@@ -220,7 +220,7 @@ public class AirplaneManager {
             throw new IllegalArgumentException("Fuel burn and airspeed must be greater than zero.");
         }
 
-        return (airplane.fuelCapacity / airplane.fuelBurn) * airplane.airspeed;
+        return ((airplane.fuelCapacity/airplane.fuelBurn) * airplane.airspeed);
     }
 
     // Method to search for an airplane by key
@@ -245,7 +245,7 @@ public class AirplaneManager {
     }
 
     public static int findAircraftKey(String model) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src\\csci360flightsystem\\Airplanes.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/csci360flightsystem/Airplanes.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -261,7 +261,7 @@ public class AirplaneManager {
     }
 
     // Load airplanes from file
-    private void loadAirplanesFromFile(String fileName) {
+    public void loadAirplanesFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -283,7 +283,7 @@ public class AirplaneManager {
     }
 
     // Save airplanes to file
-    private void saveAirplanesToFile(String fileName) {
+    public void saveAirplanesToFile(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             for (Airplane airplane : airplanes) {
                 writer.write(airplane.getAirspeed() + "," +

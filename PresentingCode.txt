@@ -3,12 +3,14 @@ Add Airplane
 Modify the added Airplane
 Search the edited Airplane 
 Delete edited Airplane
+Redisplay Airplanes
 
 Display airports
 Add Airport
 Modify the added Airport
 Search the edited Airport
 Delete the edited Airport
+Redisplay Airport
 
 Direct Flight   --       KJFK -> CYYZ with 737-800
 Indirect Flight --       CYYZ -> CNOR with A330 

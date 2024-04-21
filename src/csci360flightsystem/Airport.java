@@ -44,13 +44,13 @@ public class Airport {
         return ICAO;
     }
 
-    // ICAO must be 4 characters long. Must start with C for Canada or K for the US
+    // ICAO must be 4 characters long
     public void setICAO(String ICAO) {
-        if (ICAO.length() == 4 && (ICAO.charAt(0) == 'C' || ICAO.charAt(0) == 'K')) {
+        if (ICAO.length() == 4) {
             this.ICAO = ICAO;
         } else {
             throw new IllegalArgumentException(
-                    "ICAO must be 4 characters long and start with C for Canada or K for the US.");
+                    "ICAO must be 4 characters long.");
         }
     }
 

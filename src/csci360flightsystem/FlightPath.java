@@ -11,14 +11,15 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 import java.util.Vector;
 import java.util.Scanner;
+
+import csci360flightsystem.AirportManager.AirportNode;
 
 public class FlightPath {
 
@@ -98,7 +99,7 @@ public class FlightPath {
     }
 
     // Vector list of flight paths
-    private static Vector<FlightPath> flightPaths;
+    private static Vector<FlightPath> flightPaths = new Vector<>();
 
     // Constructor for the FlightPath class
     public FlightPath() {
@@ -107,6 +108,18 @@ public class FlightPath {
     }
 
     // Methods for the FlightPath class
+    // Override the toString method
+    @Override
+    public String toString() {
+        return "FlightPath{" +
+                "key=" + key +
+                ", startingAirport='" + startingAirport + '\'' +
+                ", middleAirports=" + middleAirports +
+                ", endingAirport='" + endingAirport + '\'' +
+                ", airplane=" + (airplane != null ? airplane.toString() : "null") +
+                '}';
+    }
+
     // Method to create a new flight path
     public static void createFlightPath(FlightPath flightPath) {
         if (flightPath.getKey() <= 0 || flightPath.getStartingAirport() == null ||
@@ -149,10 +162,23 @@ public class FlightPath {
         System.out.println("Flight path with key " + key + " not found.");
     }
 
-    // Method to delete a flight path
-    public static void deleteFlightPath(int index) {
-        flightPaths.remove(index);
-        saveFlightPathsToFile(FILE_LOCATION);
+    // Method to delete a flight path based on its key
+    public static void deleteFlightPath(int key) {
+        FlightPath flightPathToRemove = null;
+        for (FlightPath flightPath : flightPaths) {
+            if (flightPath.getKey() == key) {
+                flightPathToRemove = flightPath;
+                break;
+            }
+        }
+
+        if (flightPathToRemove != null) {
+            flightPaths.remove(flightPathToRemove);
+            saveFlightPathsToFile(FILE_LOCATION);
+            System.out.println("Flight path with key " + key + " has been deleted.");
+        } else {
+            System.out.println("No flight path found with key " + key);
+        }
     }
 
     // Method to display flight paths
@@ -172,66 +198,99 @@ public class FlightPath {
         return null; // Return null if flight path with specified key is not found
     }
 
-    // Method to search for a flight path by starting and ending airports
-    public void launchFlight(FlightPath flightPath) {
-        AirportManager airportManager = AirportManager.getInstance();
-        AirplaneManager airplaneManager = AirplaneManager.getInstance();
+    // Method to search for a flight path
+    private AirportManager airportManager = AirportManager.getInstance();
 
-        Airport startingAirport = airportManager.searchAirport(flightPath.getStartingAirport());
-        Airport endingAirport = airportManager.searchAirport(flightPath.getEndingAirport());
-        Airplane airplane = flightPath.getAirplane();
+    public void launchFlight(String startingICAO, String endingICAO, Airplane airplane) {
+        Airport start = airportManager.searchAirport(startingICAO);
+        Airport end = airportManager.searchAirport(endingICAO);
 
-        double flightRange = airplaneManager.calculateFlightRange(airplane);
+        if (start == null || end == null || airplane == null) {
+            System.out.println("Invalid flight path data provided.");
+            return;
+        }
 
-        // Check direct flight is possible based on the flight range and fuel type
-        if (AirportManager.calculateDistance(startingAirport, endingAirport) <= flightRange &&
-                startingAirport.getFuelType().equalsIgnoreCase(airplane.getFuelType())) {
+        double distance = AirportManager.calculateDistance(start, end);
+        double flightRange = airplane.getFuelCapacity() / airplane.getFuelBurn() * airplane.getAirspeed();
 
-            System.out.println("Direct flight is possible. Launching flight...");
-            // Logic to launch the direct flight
+        System.out.println("Attempting to launch flight...");
+        List<Airport> visitedAirports = new ArrayList<>();
+        visitedAirports.add(start);
+
+        if (distance <= flightRange) {
+            // Direct flight is possible
+            System.out.println("Direct flight is possible.");
+            printFlightDetails(visitedAirports, end, distance, airplane);
         } else {
-            // Depth-first search to find a connecting path with refueling stops
-            if (isPathAvailable(startingAirport, endingAirport, flightRange, airportManager, airplane.getFuelType())) {
-                System.out.println("Connecting flight path found. Launching flight...");
-                // Logic to launch the flight with layovers
-            } else {
-                System.out.println("No viable connecting flight path found. Cannot launch flight.");
+            // Start looking for multi-leg options
+            Airport current = start;
+            double totalDistance = 0;
+            while (!current.equals(end)) {
+                Airport next = findNextAirport(current, end, flightRange, airplane.getFuelType());
+                if (next == null) {
+                    System.out.println("Flight not possible with current fuel and range limitations.");
+                    return;
+                }
+                visitedAirports.add(next);
+                double legDistance = AirportManager.calculateDistance(current, next);
+                totalDistance += legDistance;
+                current = next;
             }
+            printFlightDetails(visitedAirports, end, totalDistance, airplane);
         }
     }
 
-    // Method to check if a path is available with refueling stops
-    private boolean isPathAvailable(Airport start, Airport end, double range, AirportManager airportManager,
-            String requiredFuelType) {
-        Set<String> visited = new HashSet<>();
-        Stack<AirportManager.AirportNode> stack = new Stack<>();
-        stack.push(airportManager.new AirportNode(start));
+    private Airport findNextAirport(Airport current, Airport target, double range, String fuelType) {
+        Map<Airport, Double> possibleDestinations = new HashMap<>();
 
-        while (!stack.isEmpty()) {
-            AirportManager.AirportNode node = stack.pop();
-            Airport currentAirport = node.getAirport();
-            visited.add(currentAirport.getICAO());
+        for (Map.Entry<AirportNode, Double> entry : airportManager.getAirportGraph().get(current.getICAO()).edges
+                .entrySet()) {
+            Airport nextAirport = entry.getKey().getAirport();
+            double distanceToNextAirport = entry.getValue();
 
-            if (currentAirport.getICAO().equals(end.getICAO())) {
-                return true; // Found a path
-            }
+            // Check if the next airport is within the range and has the required fuel type
+            if (distanceToNextAirport <= range && nextAirport.getFuelType().equalsIgnoreCase(fuelType)) {
+                // Calculate the distance from nextAirport to the target to ensure it's closer
+                double distanceToTarget = AirportManager.calculateDistance(nextAirport, target);
+                double currentDistanceToTarget = AirportManager.calculateDistance(current, target);
 
-            // Push all unvisited and reachable airports onto the stack
-            for (Map.Entry<AirportManager.AirportNode, Double> edge : node.edges.entrySet()) {
-                AirportManager.AirportNode adjacentNode = edge.getKey();
-                Airport nextAirport = adjacentNode.getAirport();
-                double distanceToNextAirport = edge.getValue();
-
-                // Check if the next airport has the required fuel type and is within range
-                if (!visited.contains(nextAirport.getICAO()) &&
-                        distanceToNextAirport <= range &&
-                        nextAirport.getFuelType().equalsIgnoreCase(requiredFuelType)) {
-
-                    stack.push(adjacentNode);
+                // Only consider this airport if it gets us closer to the target
+                if (distanceToTarget < currentDistanceToTarget) {
+                    possibleDestinations.put(nextAirport, distanceToTarget);
                 }
             }
         }
-        return false; // No path found
+
+        // Select the next airport which is closest to the target among the possible
+        // options
+        return possibleDestinations.entrySet().stream()
+                .min(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
+    private void printFlightDetails(List<Airport> visitedAirports, Airport end, double totalDistance,
+            Airplane airplane) {
+        Airport previousAirport = null;
+        for (Airport airport : visitedAirports) {
+            if (previousAirport != null) {
+                double legHeading = calculateHeading(previousAirport, airport);
+                System.out.println("Heading from " + previousAirport.getName() + " to " + airport.getName() + ": "
+                        + direction(legHeading));
+            }
+            System.out.println("Visited " + airport.getName() + " - Radio Frequency: " + airport.getRadioFrequency());
+            previousAirport = airport;
+        }
+        // Calculate heading from the last visited airport to the final destination
+        if (previousAirport != null && end != null) {
+            double finalLegHeading = calculateHeading(previousAirport, end);
+            System.out.println("Final leg heading from " + previousAirport.getName() + " to " + end.getName() + ": "
+                    + direction(finalLegHeading));
+            System.out.println("Arrived at " + end.getName() + " - Radio Frequency: " + end.getRadioFrequency());
+        }
+        double totalFlightTime = totalDistance / airplane.getAirspeed();
+        System.out.println("Total Distance: " + totalDistance + " km");
+        System.out.println("Total Flight Time: " + totalFlightTime + " hours");
     }
 
     // Method to calulate the heading of the flight path
@@ -410,9 +469,16 @@ public class FlightPath {
 
     // Main method for the FlightPath class
     public static void main(String[] args) {
+        // Testing creation of flightpaths, modifying existing flightpaths, deleting
+        // existing flightpaths,
+        // display a specific flightpath by key, calculating the heading and direction,
+        // and launching a flight,
+        // and displaying all flight paths.
 
+        // Add airports for testing
+        // Airports for testing
         AirportManager airportManager = AirportManager.getInstance();
-        
+
         AirplaneManager airplaneManager = AirplaneManager.getInstance();
 
         Scanner userInput = new Scanner(System.in);
